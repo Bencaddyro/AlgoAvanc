@@ -5,17 +5,20 @@
 #include "graphique.h"
 
 
-SDL_Surface* affichage;
+extern SDL_Surface* affichage;
 
 
-unsigned long Color(int R, int G, int B)
+Uint32 Color(int R, int G, int B)
 {//Convertit RGB en long
 	return 65536*R + 256*G + B;
 }
  
-void PutPixel(int x, int y, unsigned long pixel)
+void PutPixel(SDL_Surface*ecran ,int x, int y, Uint32 pixel)
 {
-  *((Uint32*)(affichage->pixels)+ x + y * affichage->w)= pixel;
+    unsigned char * p;
+    int bpp = ecran->format->BytesPerPixel;
+    p = (unsigned char *)ecran->pixels + y * ecran->pitch + x * bpp;
+    *(Uint32*)p = pixel;
 }
  
 void drawLine(int x1,int y1, int x2,int y2, int R, int G, int B)  // Bresenham
@@ -52,7 +55,7 @@ void drawLine(int x1,int y1, int x2,int y2, int R, int G, int B)  // Bresenham
 				erreur -= Dx;
 				y += yincr;
 			}
-			PutPixel(x, y,couleur);
+			PutPixel(affichage,x, y,couleur);
 		}
 	}
 	else
@@ -68,7 +71,7 @@ void drawLine(int x1,int y1, int x2,int y2, int R, int G, int B)  // Bresenham
 				erreur -= Dy;
 				x += xincr;
 			}
-			PutPixel(x, y,couleur);
+			PutPixel(affichage,x, y,couleur);
 		}
 	}
 }
@@ -82,7 +85,7 @@ void initSDL(void)
   }
  
   atexit(SDL_Quit);
-  affichage = SDL_SetVideoMode(500, 500, 32, SDL_SWSURFACE);
+  affichage = SDL_SetVideoMode(500, 500, 32, SDL_HWSURFACE);
  
   if (affichage == NULL) {
     fprintf(stderr, "Impossible d'activer le mode graphique : %s\n", SDL_GetError());
