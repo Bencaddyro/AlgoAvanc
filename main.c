@@ -1,10 +1,10 @@
 #include "main.h"
 SDL_Surface*affichage;
 
-void printsol(int n,corde solution[]){
+void printsol(int n,point poly[],corde solution[]){
   int i;
   for(i=0;i<n-3;i++){
-    printf(" arc: (%d,%d)-(%d,%d)\n",solution[i].p1.x,solution[i].p1.y,solution[i].p2.x,solution[i].p2.y);
+    printf(" arc: (%d,%d)-(%d,%d)\n",poly[solution[i].p1].x,poly[solution[i].p1].y,poly[solution[i].p2].x,poly[solution[i].p2].y);
   }
 }
 
@@ -24,12 +24,12 @@ void printpoint(int n,point poly[]){
 }
 
 
-void tracersol(int n,corde solution[]){
+void tracersol(int n,point poly[],corde solution[]){
   int i;
   for(i=0;i<n-3;i++){
     SDL_Flip(affichage);
     attendreTouche();
-    drawLine(solution[i].p1.x,solution[i].p1.y,solution[i].p2.x,solution[i].p2.y,0,255,255);
+    drawLine(poly[solution[i].p1].x,poly[solution[i].p1].y,poly[solution[i].p2].x,poly[solution[i].p2].y,0,255,255);
 
   }
 }
@@ -74,8 +74,8 @@ int main(int argc, char** argv){
 
   tracerpoly(n,poly);
   solglouton(n,poly,solution);
-  printsol(n,solution);
-  tracersol(n,solution);
+  printsol(n,poly,solution);
+  tracersol(n,poly,solution);
 
 
 

@@ -8,16 +8,16 @@ typedef struct{
 } point;
 
 typedef struct{
-  point p1;
-  point p2;
+  int p1;
+  int p2;
 } corde;
 
 
 
 void genpoly(int n,point poly[]);
 
-float coutcorde(corde c);
+float coutcorde(point poly[],corde c);
 
-float coutsol(int n,corde solution[]);
+float coutsol(int n,point poly[],corde solution[]);
 
 #endif

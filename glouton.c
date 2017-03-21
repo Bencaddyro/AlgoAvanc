@@ -24,9 +24,9 @@ void solglouton(int n,point poly[],corde solution[]){
 	while(!(vect[suiv])){
 	  suiv=(suiv+1)%n;
 	}
-	c.p1=poly[pred];
-	c.p2=poly[suiv];
-       	cout=coutcorde(c);	
+	c.p1=pred;
+	c.p2=suiv;
+       	cout=coutcorde(poly,c);	
 	if(cout<min){
 	  min=cout;
 	  solution[k]=c;

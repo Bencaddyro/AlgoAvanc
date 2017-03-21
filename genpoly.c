@@ -50,15 +50,15 @@ void genpoly(int n,point poly[]){
 
 
 
-float coutcorde(corde c){
-  return sqrt((c.p1.x-c.p2.x)*(c.p1.x-c.p2.x)+(c.p1.y-c.p2.y)*(c.p1.y-c.p2.y));
+float coutcorde(point poly[],corde c){
+  return sqrt((poly[c.p1].x-poly[c.p2].x)*(poly[c.p1].x-poly[c.p2].x)+(poly[c.p1].y-poly[c.p2].y)*(poly[c.p1].y-poly[c.p2].y));
 }
 
-float coutsol(int n,corde solution[]){
+float coutsol(int n,point poly[],corde solution[]){
   float res=0;
   int i;
   for(i=0;i<n;i++){
-    res+=coutcorde(solution[i]);
+    res+=coutcorde(poly,solution[i]);
   }
   return res;
 }
