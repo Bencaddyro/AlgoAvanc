@@ -13,6 +13,15 @@ int comp(const void * a, const void * b){
 }
 
 
+int compa(const void * p1, const void * p2){
+  //return ( *(point*)a - *(point*)b );
+
+  return 0;
+
+}
+
+
+
 void genpoly(int n,point poly[]){
   int i;
   int angle[n];
@@ -48,6 +57,36 @@ void genpoly(int n,point poly[]){
   
 }
 
+
+void genpoly2(int n,point poly[]){
+  srand(time(NULL));
+  point p;
+  int i;
+  for(i=0;i<n;i++){//génération point random
+    p.x=rand()%400;
+    p.y=rand()%400;
+    poly[i]=p; 
+  };
+
+  //recherche min des abcisse & ordonné (a remonter dans la génération)
+
+  //tri en fonction de l'angle(croissant)
+
+  qsort(poly,n,sizeof(point),compa);
+
+  for(i=0;i<n;i++){
+    
+
+    
+  }
+
+
+
+
+
+
+
+}
 
 
 float coutcorde(point poly[],corde c){

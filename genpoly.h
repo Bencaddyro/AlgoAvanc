@@ -10,6 +10,7 @@ typedef struct{
 typedef struct{
   int p1;
   int p2;
+  float lon;
 } corde;
 
 

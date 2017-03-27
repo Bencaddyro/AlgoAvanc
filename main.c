@@ -72,11 +72,19 @@ int main(int argc, char** argv){
   tracersol(7,solution);
   */
 
+
+  /*
   tracerpoly(n,poly);
   solglouton(n,poly,solution);
   printsol(n,poly,solution);
   tracersol(n,poly,solution);
+  */
 
+
+  corde*tab;
+  tab=gencorde(n,poly);
+
+  
 
 
   SDL_Flip(affichage);
