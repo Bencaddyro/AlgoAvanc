@@ -21,6 +21,7 @@ int compa(const void * p1, const void * p2){
 }
 
 
+//Génération de polygone_____________________________________________________________________________________________________________________________
 
 void genpoly(int n,point poly[]){
   int i;
@@ -58,6 +59,8 @@ void genpoly(int n,point poly[]){
 }
 
 
+//_______________________________________________________________________________________________________________________________________________
+
 void genpoly2(int n,point poly[]){
   srand(time(NULL));
   point p;
@@ -82,16 +85,18 @@ void genpoly2(int n,point poly[]){
 
 
 
-
-
-
-
 }
 
+//Calcul du cout d'une corde_______________________________________________________________________________________________________________________________________________
 
 float coutcorde(point poly[],corde c){
   return sqrt((poly[c.p1].x-poly[c.p2].x)*(poly[c.p1].x-poly[c.p2].x)+(poly[c.p1].y-poly[c.p2].y)*(poly[c.p1].y-poly[c.p2].y));
 }
+
+float coutcorde2(corde2 c){
+  return sqrt(c.p1.x-c.p2.x)*(c.p1.x-c.p2.x)+(c.p1.y-c.p2.y)*(c.p1.y-c.p2.y));
+}
+//_______________________________________________________________________________________________________________________________________________
 
 float coutsol(int n,point poly[],corde solution[]){
   float res=0;

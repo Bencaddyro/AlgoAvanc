@@ -65,25 +65,22 @@ int main(int argc, char** argv){
   p.x=181;
   p.y=116;
   exemple[6]=p;
-  /*
-  tracerpoly(7,exemple);
-  solglouton(7,exemple,solution);
-  printsol(7,solution);
-  tracersol(7,solution);
-  */
+  
+  
+  
 
 
-  /*
+  
   tracerpoly(n,poly);
   solglouton(n,poly,solution);
   printsol(n,poly,solution);
   tracersol(n,poly,solution);
-  */
+  
 
-
+/*
   corde*tab;
   tab=gencorde(n,poly);
-
+*/
   
 
 
