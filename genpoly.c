@@ -96,7 +96,7 @@ float coutcorde(point poly[],corde c){
 float coutsol(int n,point poly[],corde solution[]){
   float res=0;
   int i;
-  for(i=0;i<n;i++){
+  for(i=0;i<n-3;i++){
     res+=coutcorde(poly,solution[i]);
   }
   return res;

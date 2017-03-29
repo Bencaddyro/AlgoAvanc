@@ -73,17 +73,23 @@ int main(int argc, char** argv){
   */
 
 
-  /*
+  
   tracerpoly(n,poly);
+  
+  solessai(n,poly,solution);
+
+  tracersol(n,poly,solution);
+
+  /*
   solglouton(n,poly,solution);
   printsol(n,poly,solution);
   tracersol(n,poly,solution);
   */
 
-
+  /*
   corde*tab;
   tab=gencorde(n,poly);
-
+  */
   
 
 
