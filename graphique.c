@@ -85,7 +85,7 @@ void initSDL(void)
   }
  
   atexit(SDL_Quit);
-  affichage = SDL_SetVideoMode(500, 500, 32, SDL_HWSURFACE);
+  affichage = SDL_SetVideoMode(1000,500,32,SDL_HWSURFACE);
  
   if (affichage == NULL) {
     fprintf(stderr, "Impossible d'activer le mode graphique : %s\n", SDL_GetError());
@@ -96,11 +96,25 @@ void initSDL(void)
 }
 
 
-void attendreTouche(void)
+void attendreTouche(int*bool)
 {
   SDL_Event event;
  
   do
     SDL_WaitEvent(&event);
+
   while (event.type != SDL_QUIT && event.type != SDL_KEYDOWN);
+      
+  
+  switch(event.key.keysym.sym){
+  case SDLK_q:
+    *bool=0;
+    break;
+  case SDLK_SPACE:
+    break;
+  default:
+    *bool=0;
+    break;
+  }
+
 }
