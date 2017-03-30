@@ -12,8 +12,12 @@ void tracerpoly(int n,point poly[]){
   int i;
   for(i=0;i<n-1;i++){
     drawLine(poly[i].x,poly[i].y,poly[i+1].x,poly[i+1].y,255,255,255);
+
+    drawLine(poly[i].x+500,poly[i].y,poly[i+1].x+500,poly[i+1].y,255,255,255);
   }
   drawLine(poly[0].x,poly[0].y,poly[n-1].x,poly[n-1].y,255,255,255);
+  drawLine(poly[0].x+500,poly[0].y,poly[n-1].x+500,poly[n-1].y,255,255,255);
+  SDL_Flip(affichage);
 }
 
 void printpoint(int n,point poly[]){ 
@@ -27,10 +31,20 @@ void printpoint(int n,point poly[]){
 void tracersol(int n,point poly[],corde solution[]){
   int i;
   for(i=0;i<n-3;i++){
-    SDL_Flip(affichage);
-    attendreTouche();
+    SDL_Delay(300);
+      //attendreTouche();
     drawLine(poly[solution[i].p1].x,poly[solution[i].p1].y,poly[solution[i].p2].x,poly[solution[i].p2].y,0,255,255);
+    SDL_Flip(affichage);
+  }
+}
 
+void tracersol2(int n,point poly[],corde solution[]){
+  int i;
+  for(i=0;i<n-3;i++){
+    SDL_Delay(300);
+    //attendreTouche();
+    drawLine(poly[solution[i].p1].x+500,poly[solution[i].p1].y,poly[solution[i].p2].x+500,poly[solution[i].p2].y,0,255,255);
+    SDL_Flip(affichage);
   }
 }
 
@@ -39,11 +53,12 @@ int main(int argc, char** argv){
   initSDL();
   int n=atoi(argv[1]);
   point poly[n];
-  genpoly(n,poly);
   corde solution[n-3];
-
+  int ok=1;
   point exemple[7];
   point p;
+
+  /*
   p.x=399;
   p.y=265;
   exemple[0]=p;
@@ -65,36 +80,85 @@ int main(int argc, char** argv){
   p.x=181;
   p.y=116;
   exemple[6]=p;
+  */
+  p.x=0;
+  p.y=10;
+  exemple[0]=p;
+  p.x=0;
+  p.y=20;
+  exemple[1]=p;
+  p.x=8;
+  p.y=26;
+  exemple[2]=p;
+  p.x=15;
+  p.y=26;
+  exemple[3]=p;
+  p.x=27;
+  p.y=21;
+  exemple[4]=p;
+  p.x=22;
+  p.y=12;
+  exemple[5]=p;
+  p.x=10;
+  p.y=0;
+  exemple[6]=p;
+
+
   /*
   tracerpoly(7,exemple);
-  solglouton(7,exemple,solution);
-  printsol(7,solution);
-  tracersol(7,solution);
+  solessai(n,exemple,solution);
+  //solglouton(7,exemple,solution);
+  printsol(7,exemple,solution);
+  tracersol(7,exemple,solution);
+  printf("valeur de la solution essai successif : %f\n",coutsol(n,exemple,solution));
   */
-
-
-  
-  tracerpoly(n,poly);
-  
-  solessai(n,poly,solution);
-
-  tracersol(n,poly,solution);
 
   /*
-  solglouton(n,poly,solution);
-  printsol(n,poly,solution);
-  tracersol(n,poly,solution);
+  SDL_Flip(affichage);
+  attendreTouche();
+  SDL_FillRect(affichage,NULL,Color(0,0,0));
+
+  tracerpoly(7,exemple);
+  //solessai(n,exemple,solution);
+  solglouton(7,exemple,solution);
+  printsol(7,exemple,solution);
+  tracersol(7,exemple,solution);
+  printf("valeur de la solution glouton : %f\n",coutsol(n,exemple,solution));
   */
+
+  while(ok){
+  genpoly(n,poly);
+  
+  tracerpoly(n,poly);
+  solessai(n,poly,solution);
+  tracersol(n,poly,solution);
+  printf("valeur de la solution essai successif : %f\n",coutsol(n,poly,solution));
+
+
+  /*
+  SDL_Flip(affichage);
+  attendreTouche();
+  SDL_FillRect(affichage,NULL,Color(0,0,0));
+  */
+
+  //  tracerpoly(n,poly);
+  solglouton(n,poly,solution);
+  tracersol2(n,poly,solution);
+  printf("valeur de la solution algo glouton : %f\n",coutsol(n,poly,solution));
 
   /*
   corde*tab;
   tab=gencorde(n,poly);
   */
   
+  //printf("valeur de la solution : %f\n",coutsol(n,poly,solution));
+  attendreTouche(&ok);
 
-
+  SDL_FillRect(affichage,NULL,Color(0,0,0));
   SDL_Flip(affichage);
-  attendreTouche();
+  }
+
+
   SDL_Quit();
 
   return EXIT_SUCCESS;

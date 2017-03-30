@@ -10,13 +10,11 @@ int validecorde(int n,int i,int j,corde solution[]){
   //verif coupe pas autre corde dans solution
   for(k=0;k<n-3;k++){//parcours des cordes dans solutions
 
-    if((solution[k].p1==i && solution[k].p2==j)//différent de sol[k]
+    if((solution[k].p1==i && solution[k].p2==j)//identique a sol[k]
        ||
-       (solution[k].p2==i && solution[k].p1==j)//différent de sol[k]
+       (solution[k].p1<i && i<solution[k].p2 && (j<solution[k].p1 || solution[k].p2<j))//coupe
        ||
-       (solution[k].p1<i && i<solution[k].p2 && (j<solution[k].p1 || solution[k].p2<j))//ne coupe pas
-       ||
-       (solution[k].p1<j && j<solution[k].p2 && (i<solution[k].p1 || solution[k].p2<i))//ne coupe pas
+       (solution[k].p1<j && j<solution[k].p2 && (i<solution[k].p1 || solution[k].p2<i))//coupe
        ){
       return 0;
     }
@@ -28,9 +26,7 @@ int validecorde(int n,int i,int j,corde solution[]){
 
 void solessai(int n,point poly[],corde solution[]){
   int k;
-  //génération de tout les arc
-
-  corde * tabcorde=gencorde(n,poly);
+ 
 
   //parcours récursif de tout les arc, choix de les prendre ou non, sauvegarde du meilleur résul
   corde soltemp[n-3];
@@ -38,17 +34,27 @@ void solessai(int n,point poly[],corde solution[]){
   corde c;
   c.p1=-1;
   c.p2=-1;
-  
-
   for(k=0;k<n-3;k++){
     soltemp[k]=c;
-  } 
+  }
 
+  info_essai info;
+
+  info.n=n;
+  info.tabcorde=gencorde(n,poly);
+  info.poly=poly;
+  
+  info.solution=soltemp;
+  info.finalsol=solution;
+
+
+  int compteur=0;
   float score=400.0*n;
 
-  printf("val score init %f\n",score);
-  recessai(poly,tabcorde,n,soltemp,0,solution,&score);
+  //printf("val score init %f\n",score);
+  recessai(info,0,0,&score,&compteur);
 
+  printf("compteur : %d\n",compteur);
 
 
 }
@@ -67,29 +73,41 @@ void savesolution(int n,corde sol[],corde finalsol[]){
 //structure pour save meilleur structure
 //i itération sur la longueur de solution
 //j itération sur la valeur dans tabcorde
-void recessai(point poly[],corde tabcorde[],int n,corde solution[],int i,corde finalsol[],float* meilleur){
+void recessai(info_essai info,int i,int ki,float* meilleur,int*compteur){
   int k;
-  if(i==n-3){
-    printf("sol trouvé ! %f\n",coutsol(n,poly,solution));
-    if(coutsol(n,poly,solution)<*meilleur ){//fin du parcours il faut save la solution
-      savesolution(n,solution,finalsol);
-      *meilleur=coutsol(n,poly,solution);
-      printf("acces a meilleur %f\n",*meilleur);
+  int z;
+  if(i==info.n-3){
+    //printf("sol trouvé ! %f\n",coutsol(info.n,info.poly,info.solution));
+    *compteur=*compteur+1;
+
+    if(coutsol(info.n,info.poly,info.solution)<*meilleur ){//fin du parcours il faut save la solution
+      savesolution(info.n,info.solution,info.finalsol);
+      *meilleur=coutsol(info.n,info.poly,info.solution);
+      //printf("acces a meilleur %f\n",*meilleur);
     }
   }else{// cas du choix pour remplir la case i de la sol
     //printf("val de i %d \n",i);
-    for(k=0;k<(n-3)*n/2;k++){//on parcours toute les corde possibles
-      printf("increment k=%d,i=%d\n",k,i);
-      if(validecorde(n,tabcorde[k].p1,tabcorde[k].p2,solution)){//si la corde est choisissable
-	printf("corde valide\n");
-	solution[i]=tabcorde[k];//on la choisie
+    for(k=ki;k<(info.n-3)*info.n/2;k++){//on parcours toute les corde restantes
+      //printf("increment k=%d,i=%d\n",k,i);
+      if(validecorde(info.n,info.tabcorde[k].p1,info.tabcorde[k].p2,info.solution)){//si la corde est choisissable
+	//printf("corde valide : %d-%d\n",info.tabcorde[k].p1,info.tabcorde[k].p2);
+	//printf("parmis :\n");
+	/**
+	for(z=0;z<info.n-3;z++){
 
-	recessai(poly,tabcorde,n,solution,i+1,finalsol,meilleur);//on choisie les autres
+	  printf("(%d-%d),",info.solution[z].p1,info.solution[z].p2);
+	}
+	printf("\n");
+	**/
+
+	info.solution[i]=info.tabcorde[k];//on la choisie
+
+	recessai(info,i+1,k+1,meilleur,compteur);//on choisie les autres
 
 	corde c;
 	c.p1=-1;
 	c.p2=-1;
-	solution[i]=c;
+	info.solution[i]=c;
       }
     }
   }
