@@ -80,6 +80,7 @@ int main(int argc, char** argv){
   p.x=181;
   p.y=116;
   exemple[6]=p;
+
   */
   p.x=0;
   p.y=10;
@@ -128,6 +129,7 @@ int main(int argc, char** argv){
 
   while(ok){
   genpoly(n,poly);
+
   
   tracerpoly(n,poly);
   solessai(n,poly,solution);
@@ -146,12 +148,6 @@ int main(int argc, char** argv){
   tracersol2(n,poly,solution);
   printf("valeur de la solution algo glouton : %f\n",coutsol(n,poly,solution));
 
-  /*
-  corde*tab;
-  tab=gencorde(n,poly);
-  */
-  
-  //printf("valeur de la solution : %f\n",coutsol(n,poly,solution));
   attendreTouche(&ok);
 
   SDL_FillRect(affichage,NULL,Color(0,0,0));

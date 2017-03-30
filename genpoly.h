@@ -13,11 +13,17 @@ typedef struct{
   float lon;
 } corde;
 
+typedef struct{
+  point p1;
+  point p2;
+  float lon;
+} corde2;
 
 
 void genpoly(int n,point poly[]);
 
 float coutcorde(point poly[],corde c);
+float coutcorde(corde2 c);
 
 float coutsol(int n,point poly[],corde solution[]);
 
