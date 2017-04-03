@@ -22,7 +22,7 @@ typedef struct{
 
 
 void genpoly(int n,point poly[]);
-void genpoly2(int n,point poly[]);
+void genpoly2(int n,point poly[], int * n2,point* poly2[]);
 
 float coutcorde(point poly[],corde c);
 float coutcorde2(corde2 c);

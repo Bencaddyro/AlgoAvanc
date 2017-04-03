@@ -26,10 +26,10 @@ void tracerdebug(int n,point poly[]){
   for(i=0;i<n-1;i++){
     attendreTouche(&ok);
     SDL_Flip(affichage);
-    drawLine(poly[i].x,poly[i].y,poly[i+1].x,poly[i+1].y,255,255,255);
-    printf("%d-%d\n",poly[i].x,poly[i].y);
+    drawLine(poly[i].x,poly[i].y,poly[i+1].x,poly[i+1].y,255,0,0);
+    //printf("%d-%d\n",poly[i].x,poly[i].y);
   }
-  printf("%d-%d\n",poly[i].x,poly[i].y);
+  //printf("%d-%d\n",poly[i].x,poly[i].y);
   attendreTouche(&ok);
 }
 	     
@@ -165,12 +165,18 @@ int main(int argc, char** argv){
   }
   */
 
-  genpoly2(n,poly);
+  point *poly2;
+  int n2;
 
+  genpoly2(n,poly,&n2,&poly2);
+
+  printf("%d\n",n2);
   tracerdebug(n,poly);
 
+  attendreTouche(&ok);
+  tracerpoly(n2,poly2);
 
-
+  attendreTouche(&ok);
 
   SDL_Quit();
 

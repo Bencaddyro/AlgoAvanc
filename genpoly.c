@@ -54,7 +54,7 @@ void genpoly(int n,point poly[]){
 
 //____________________________________________________________________________________________________________
 
-void genpoly2(int n,point poly[]){
+void genpoly2(int n,point poly[],int * n2,point** poly2){
   srand(time(NULL));
   point p;
   int i;
@@ -133,58 +133,90 @@ void genpoly2(int n,point poly[]){
 
   //tri en fonction de l'angle(croissant)
 
-  printf("lolu : %d-%d\n",minx,miny);
+  //printf("lolu : %d-%d\n",minx,miny);
 
   qsort(poly,n,sizeof(point),compa);
 
   //parcours avec ecart des mauvais point...
 
   int boool[n];
+
+  for(i=0;i<n;i++){
+    boool[i]=1;
+  }
   int rejet=0;
 
-  int x1=poly[0].x;
-  int y1=poly[0].y;
-  int x2=poly[1].x;
-  int y2=poly[1].y;
-  int x3=poly[2].x;
-  int y3=poly[2].y;
-
-  for(i=3;i<n;i++){
-    if((x2-x1)*(y3-y1)-(y2-y1)*(x3-x1)>=0){
-      //acceptation du point 2
-      x1=x2;
-      y1=y2;
-      x2=x3;
-      y2=y3;
-      x3=poly[i].x;
-      y3=poly[i].y;
-    }else{
-      //rejet du point 2
-      boool[i]=1;
-      rejet++;
-      x2=x3;
-      y2=y3;
-      x3=poly[i].x;
-      y3=poly[i].y;
-
+  point predec(i){
+    int j=i-1;
+    while(!boool[j]){
+      j--;
     }
+    return j;
+  }
+  
+  point suiv(i){
+    int j=i+1;
+    while(!boool[j]){
+      j++;
+    }
+    return j;
   }
 
+
+  i=1;
+
+  point p1=poly[0],p2=poly[1],p3=poly[2];
+
+
+  while(i<n+1){
+    
+    //printf("val du test : %d\n",(x2-x1)*(y3-y1)-(y2-y1)*(x3-x1));
+    if((p2.x-p1.x)*(p3.y-p1.y)-(p2.y-p1.y)*(p3.x-p1.x)<0){
+      
+      //acceptation du 
+      boool[i]=1;
+
+      p1=p2;
+      p2=p3;
+      p3=poly[i+2];
+      
+    }else{
+      //rejet du point 2
+
+
+      //p2 doit redevenir p1
+      //p1 doit devenir l'ancien p1
+      //p3 bouge pas
+      boool[i]=0;
+      rejet++;
+      
+      p2=p1;
+      p1=predec(i-1);
+      
+      //
+      i--
+      
+      
+    }
+    //printf("point %d tester !\n",i-2);
+    i++;
+
+  }
+ 
   //recopie dans le poly de sortie
   int j=0;
-  int * n2;
-  point * poly2;
-
-
   *n2=n-rejet;
-  poly2=malloc(sizeof(point)*(*n2));
+
+  //printf("rejet : %d, pt : %d\n",rejet,*n2);
+  *poly2=malloc(sizeof(point)*(*n2));
   for(i=0;i<n;i++){
-    if(boool[i]==0){
-      poly2[j]=poly[1];
+    if(boool[i]){
+      (*poly2)[j]=poly[i];
+      //printf("%d-%d\n",(*poly2)[j].x,(*poly)[j].y);
       j++;
     }
   }
-
+  //printf("val j : %d\n",j);
 
 
 
