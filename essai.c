@@ -75,9 +75,9 @@ void savesolution(int n,corde sol[],corde finalsol[]){
 //j itération sur la valeur dans tabcorde
 void recessai(info_essai info,int i,int ki,float* meilleur,int*compteur){
   int k;
-  int z;
   if(i==info.n-3){
     //printf("sol trouvé ! %f\n",coutsol(info.n,info.poly,info.solution));
+   
     *compteur=*compteur+1;
 
     if(coutsol(info.n,info.poly,info.solution)<*meilleur ){//fin du parcours il faut save la solution
@@ -87,18 +87,17 @@ void recessai(info_essai info,int i,int ki,float* meilleur,int*compteur){
     }
   }else{// cas du choix pour remplir la case i de la sol
     //printf("val de i %d \n",i);
-    for(k=ki;k<(info.n-3)*info.n/2;k++){//on parcours toute les corde restantes
+
+
+    for(k=ki;k<(info.n-3)*info.n/2+i-info.n+4;k++){//on parcours toute les corde restantes
+
+
+
       //printf("increment k=%d,i=%d\n",k,i);
       if(validecorde(info.n,info.tabcorde[k].p1,info.tabcorde[k].p2,info.solution)){//si la corde est choisissable
 	//printf("corde valide : %d-%d\n",info.tabcorde[k].p1,info.tabcorde[k].p2);
 	//printf("parmis :\n");
-	/**
-	for(z=0;z<info.n-3;z++){
 
-	  printf("(%d-%d),",info.solution[z].p1,info.solution[z].p2);
-	}
-	printf("\n");
-	**/
 
 	info.solution[i]=info.tabcorde[k];//on la choisie
 

@@ -7,6 +7,7 @@ typedef struct{
   int y;
 } point;
 
+
 typedef struct{
   int p1;
   int p2;
@@ -21,6 +22,7 @@ typedef struct{
 
 
 void genpoly(int n,point poly[]);
+void genpoly2(int n,point poly[]);
 
 float coutcorde(point poly[],corde c);
 float coutcorde2(corde2 c);
