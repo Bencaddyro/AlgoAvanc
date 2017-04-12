@@ -54,7 +54,7 @@ void solessai(int n,point poly[],corde solution[]){
   //printf("val score init %f\n",score);
   recessai(info,0,0,&score,&compteur);
 
-  printf("Nombre de triangularisation : %d\n",compteur);
+  printf("compteur : %d\n",compteur);
 
 
 }
