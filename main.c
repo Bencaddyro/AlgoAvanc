@@ -51,12 +51,12 @@ void tracersol(int n,point poly[],corde solution[]){
   }
 }
 
-void tracersol2(int n,point poly[],corde solution[]){
+void tracersol2(int n,point poly[],corde2 solution[]){
   int i;
   for(i=0;i<n-3;i++){
     SDL_Delay(300);
     //attendreTouche();
-    drawLine(poly[solution[i].p1].x+500,poly[solution[i].p1].y,poly[solution[i].p2].x+500,poly[solution[i].p2].y,0,255,255);
+    drawLine(solution[i].p1.x+500,solution[i].p1.y,solution[i].p2.x+500,solution[i].p2.y,0,255,255);
     SDL_Flip(affichage);
   }
 }
@@ -67,6 +67,7 @@ int main(int argc, char** argv){
   int n=atoi(argv[1]);
   point poly[n];
   corde solution[n-3];
+  corde2 solution2[n-3];
   int ok=1;
   point exemple[7];
   point p;
@@ -117,76 +118,64 @@ int main(int argc, char** argv){
   p.y=0;
   exemple[6]=p;
 
+
   /*
-  //résolution de l'exemple
   tracerpoly(7,exemple);
   solessai(n,exemple,solution);
+  //solglouton(7,exemple,solution);
   printsol(7,exemple,solution);
   tracersol(7,exemple,solution);
   printf("valeur de la solution essai successif : %f\n",coutsol(n,exemple,solution));
+  */
 
+  /*
+  SDL_Flip(affichage);
+  attendreTouche();
+  SDL_FillRect(affichage,NULL,Color(0,0,0));
+
+  tracerpoly(7,exemple);
+  //solessai(n,exemple,solution);
   solglouton(7,exemple,solution);
   printsol(7,exemple,solution);
-  tracersol2(7,exemple,solution);
+  tracersol(7,exemple,solution);
   printf("valeur de la solution glouton : %f\n",coutsol(n,exemple,solution));
   */
 
 
-
-
-  /*
-  while(ok){//boucle interactive générer-résoudre génération 1
+  
+  while(ok){
   genpoly(n,poly);
 
-  
+  //  tracerpoly(n,poly);
+  //solglouton(n,poly,solution);
+  soldynamique(n,poly,solution2);
+  tracersol2(n,poly,solution2);
+  printf("valeur de la solution algo dynamique : %f\n",coutsol(n,poly,solution));  
+
   tracerpoly(n,poly);
   solessai(n,poly,solution);
   tracersol(n,poly,solution);
   printf("valeur de la solution essai successif : %f\n",coutsol(n,poly,solution));
-  
-
-
-  //  tracerpoly(n,poly);
-  solglouton(n,poly,solution);
-  tracersol2(n,poly,solution);
-  printf("valeur de la solution algo glouton : %f\n",coutsol(n,poly,solution));
 
   attendreTouche(&ok);
 
   SDL_FillRect(affichage,NULL,Color(0,0,0));
   SDL_Flip(affichage);
   }
-  */
-
-
   
-  point *poly2;
+
+  /*point *poly2;
   int n2;
 
-
-  while(ok){//boucle interactive générer-résoudre génération 2
   genpoly2(n,poly,&n2,&poly2);
-  printf("Le polygone généré a %d points\n",n2);
-  
-  tracerpoly(n2,poly2);
-  solessai(n2,poly2,solution);
-  printsol(n2,poly2,solution);
-  tracersol(n2,poly2,solution);
- 
-  printf("valeur de la solution essai successif : %f\n",coutsol(n2,poly2,solution));
-  
-  solglouton(n2,poly2,solution);
-  printsol(n2,poly2,solution);
-  tracersol2(n2,poly2,solution);
-  printf("valeur de la solution algo glouton : %f\n",coutsol(n2,poly2,solution));
+
+  printf("%d\n",n2);
+  tracerdebug(n,poly);
 
   attendreTouche(&ok);
-
-  SDL_FillRect(affichage,NULL,Color(0,0,0));
-  SDL_Flip(affichage);
-  }  
-
-  
+  tracerpoly(n2,poly2);
+*/
+  attendreTouche(&ok);
 
   SDL_Quit();
 

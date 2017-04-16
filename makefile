@@ -11,8 +11,8 @@ dynamique.o : dynamique.c dynamique.h genpoly.h
 	gcc -o dynamique.o -c dynamique.c -Wall -lm 
 
 
-main : main.c graphique.h graphique.c genpoly.c genpoly.h glouton.o essai.o dynamique.c dynamique.h
-	gcc -o main main.c graphique.c genpoly.c glouton.o essai.o -Wall -lm -lSDL
+main : main.c graphique.h graphique.c genpoly.c genpoly.h glouton.o essai.o dynamique.o
+	gcc -o main main.c graphique.c genpoly.c dynamique.o glouton.o essai.o -Wall -lm -lSDL
 
 clean:
 	rm -f main

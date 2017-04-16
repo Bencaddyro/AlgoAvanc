@@ -57,7 +57,7 @@ void genpoly(int n,point poly[]){
 void genpoly2(int n,point poly[],int * n2,point** poly2){
   srand(time(NULL));
   point p;
-  int i,i1,i2,i3;
+  int i;
   int minx=500,miny=500,index;
   for(i=0;i<n;i++){//génération point random
     p.x=rand()%400+50;
@@ -143,71 +143,63 @@ void genpoly2(int n,point poly[],int * n2,point** poly2){
 
   for(i=0;i<n;i++){
     boool[i]=1;
-    //printf("%d-%d\n",poly[i].x,poly[i].y);
   }
   int rejet=0;
 
-  int predec(int i){
+  int predec(i){
     int j=i-1;
     while(!boool[j]){
       j--;
     }
     return j;
   }
-
-  int suiv(int i){
+  
+  int suiv(i){
     int j=i+1;
     while(!boool[j]){
       j++;
     }
     return j;
   }
-  
-  
-  i1=0;//indice des points
-  i2=1;
-  i3=2;
+
+
+  i=1;
+
   point p1=poly[0],p2=poly[1],p3=poly[2];
 
 
-  while(i2<n-1){
-    //printf("p1 : %d;%d\n",p1.x,p1.y);
-    //printf("p2 : %d;%d\n",p2.x,p2.y);
-    //printf("p3 : %d;%d\n",p3.x,p3.y);
+  while(i<n+1){
+    
     //printf("val du test : %d\n",(x2-x1)*(y3-y1)-(y2-y1)*(x3-x1));
     if((p2.x-p1.x)*(p3.y-p1.y)-(p2.y-p1.y)*(p3.x-p1.x)<0){
       
-      //acceptation du point
-      //printf("accepeter !\n");
-      boool[i2]=1;
+      //acceptation du 
+      boool[i]=1;
+
+      p1=p2;
+      p2=p3;
+      p3=poly[i+2];
       
-      i1=suiv(i1);
-      i2=suiv(i2);
-      i3=suiv(i3);
-
-      p1=poly[i1];
-      p2=poly[i2];
-      p3=poly[i3];
-
     }else{
       //rejet du point 2
-      //printf("rejeter !\n");
+
 
       //p2 doit redevenir p1
       //p1 doit devenir l'ancien p1
       //p3 bouge pas
-      boool[i2]=0;
+      boool[i]=0;
       rejet++;
       
-      i1=predec(i1);
-      i2=predec(i2);
+      p2=p1;
+      //p1=predec(i-1);
       
-      p1=poly[i1];
-      p2=poly[i2];
       //
- 
+      i--;
+      
+      
     }
     //printf("point %d tester !\n",i-2);
+    i++;
 
   }
  
@@ -216,7 +208,7 @@ void genpoly2(int n,point poly[],int * n2,point** poly2){
   *n2=n-rejet;
 
   //printf("rejet : %d, pt : %d\n",rejet,*n2);
-  *poly2= malloc((*n2)*sizeof(point));
+  *poly2=malloc(sizeof(point)*(*n2));
   for(i=0;i<n;i++){
     if(boool[i]){
       (*poly2)[j]=poly[i];

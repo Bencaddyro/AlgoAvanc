@@ -6,4 +6,4 @@ typedef struct{
 	corde2 *tab_corde;	//Tableau contenant toutes les cordes retenues
 } piou;
 
-void soldynamique(int n,point poly[],corde solution[]);
+void soldynamique(int n,point poly[],corde2 solution[]);
