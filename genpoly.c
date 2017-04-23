@@ -249,3 +249,12 @@ float coutsol(int n,point poly[],corde solution[]){
   }
   return res;
 }
+
+float coutsol2(int n,corde2 solution[]){
+  float res=0;
+  int i;
+  for(i=0;i<n-3;i++){
+    res+=coutcorde2(solution[i]);
+  }
+  return res;
+}

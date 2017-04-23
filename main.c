@@ -69,8 +69,8 @@ int main(int argc, char** argv){
   corde solution[3]; //[n-3];
   corde2 solution2[3]; //[n-3];
   int ok=1;
-  point exemple[7];
-  point p;
+  //point exemple[7];
+  //point p;
 
   /*
   p.x=399;
@@ -96,6 +96,9 @@ int main(int argc, char** argv){
   exemple[6]=p;
 
   */
+
+
+/*
   p.x=0;
   p.y=10;
   exemple[0]=p;
@@ -117,7 +120,7 @@ int main(int argc, char** argv){
   p.x=10;
   p.y=0;
   exemple[6]=p;
-
+*/
 
   /*
   tracerpoly(7,exemple);
@@ -146,17 +149,17 @@ int main(int argc, char** argv){
   while(ok){
   genpoly(n,poly);
 
-  //  tracerpoly(n,poly);
+  tracerpoly(n,poly);
   //solglouton(n,poly,solution);
-  //soldynamique(n,poly,solution2);
-	soldynamique(6,exemple,solution2);
-  tracersol2(6,exemple,solution2);
-  //printf("valeur de la solution algo dynamique : %f\n",coutsol(7,exemple,solution2));  
+  soldynamique(n,poly,solution2);
+	//soldynamique(6,exemple,solution2);
+  tracersol2(n,poly,solution2);
+ printf("valeur de la solution algo dynamique : %f\n",coutsol2(n,solution2));  
 
-  tracerpoly(6,exemple);
-  solessai(6,exemple,solution);
-  tracersol(6,exemple,solution);
-  //printf("valeur de la solution essai successif : %f\n",coutsol(7,exemple,solution));
+  //tracerpoly(n,poly);
+  solessai(n,poly,solution);
+  tracersol(n,poly,solution);
+ printf("valeur de la solution essai successif : %f\n",coutsol(n,poly,solution));
 
   attendreTouche(&ok);
 
