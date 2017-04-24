@@ -34,8 +34,11 @@ void print_piou(piou P){
 void soldynamique(int n,point poly[],corde2 solution[]){
 	piou tab_sous_poly[n-2][n-2];	//On ne remplira que le triangle suppérieur. 
 	int i,j,k,l,t,x,y;
-	int x1, y1;
+	int ArraySize;
 	int NB_sommets =3; //Correspond au nombre de sommets du sous-polygone (au minimum 4)
+	int x1 = -1;
+	int y1 = -1;
+	int suite = 0;
 
 	x1=0; y1=0;
 
@@ -143,11 +146,12 @@ void soldynamique(int n,point poly[],corde2 solution[]){
 					printf("somme corde=%d     somme corde 2=%d \n", somme_corde_min, somme_corde_2);
 					if ( somme_corde_2 < somme_corde_min){
 						somme_corde_min = somme_corde_2;
+						printf("somme corde=%d     somme corde 2=%d \n", somme_corde_min, somme_corde_2);
 						//Même remarque que au dessus pour le tableau et x,y
 						printf("x=%d     y=%d  x1=%d y1=%d \n", x,y,x1,y1);
 						x = i;
 						y = i + k - 2;
-						x1 = k;
+						x1 = i+k;
 						y1 = t;
 						printf("x=%d     y=%d  x1=%d. y1=%d \n", x,y,x1,y1);
 					}
@@ -163,14 +167,22 @@ void soldynamique(int n,point poly[],corde2 solution[]){
 			
 			printf("Ajout de la corde  \n");
 			//Enregistrement dans notre tableau de corde
-			int ArraySize;
-
 
 			tab_sous_poly[i][t].somme_corde = somme_corde_min;
 			tab_sous_poly[i][t].nb_corde = tab_sous_poly[x][y].nb_corde + 1; //le +1 est pour la nouvelle corde ajoutée
+
+
+			//Cas ou on doit enregistrer deux tableaux de cordes et non pas un seul
+			if (( x1 != -1 ) && ( y1 != -1 )){
+				printf("Ajout de 2 cordes \n");
+				tab_sous_poly[i][t].nb_corde +=1;
+				suite = 1;
+			}
+
 			ArraySize = tab_sous_poly[i][t].nb_corde;
-			printf("x = %d , y = %d \n", x,y);
+
 			tab_sous_poly[i][t].tab_corde = malloc(ArraySize*sizeof(corde2));
+
 			if (tab_sous_poly[i][t].tab_corde == NULL) {
   				fprintf(stderr, "malloc failed\n");
 			}
@@ -181,28 +193,21 @@ void soldynamique(int n,point poly[],corde2 solution[]){
 			tab_sous_poly[i][t].tab_corde[0] = c  ;
 
 			//Enregistrement du tableau de corde 
-			for(l = 1; l < (ArraySize); l++){
+			for(l = 1; l < (ArraySize - suite); l++){
 				tab_sous_poly[i][t].tab_corde[l] = tab_sous_poly[x][y].tab_corde[l-1] ;
+			}
+			
+			if(suite==1){
+ 				tab_sous_poly[i][t].tab_corde[ArraySize - 1] = tab_sous_poly[x1][y1].tab_corde[0];
+				x1 = -1;
+				y1 = -1;
+				suite = 0;
 			}
 			
 			//printf("suite \n");
 			
 			print_piou(tab_sous_poly[i][t]);
-			//Cas ou on doit enregistrer deux tableaux de cordes et non pas un seul
-			if ( x1 != 0 && y1 != 0){
-				printf("Ajout de 2 tableau de corde \n");
-				//int NewSize;	// Taille lors de l'aggrandissement du tableau
-				tab_sous_poly[i][t].nb_corde ++; //= tab_sous_poly[x1][y1].nb_corde;
-				//NewSize = tab_sous_poly[i][t].nb_corde ; 
-				//On réaloue de l'espace pour le tableau
-				tab_sous_poly[i][t].tab_corde = realloc (tab_sous_poly[i][t].tab_corde, 1 * sizeof (corde2));
-				//for (l = ArraySize; l < NewSize; l++){
- 				tab_sous_poly[i][t].tab_corde[l] = tab_sous_poly[x1][y1].tab_corde[0];
-				//}
-				x1 = 0;
-				y1 = 0;
-				print_piou(tab_sous_poly[i][t]);
-			}
+
 			NB_sommets = save;
 
 						
@@ -213,6 +218,7 @@ void soldynamique(int n,point poly[],corde2 solution[]){
 		y = n - 4;
 	}
 	else{
+
 		x = 1;
 		y = n - 3;
 	}
@@ -234,11 +240,12 @@ void soldynamique(int n,point poly[],corde2 solution[]){
 
 	printf("Fin  enregistrement\n");
 	printf("____________________________________________________________________________________\n");
-	for ( i = 0; i < n - 2; i++){
+	
+	/*for ( i = 0; i < n - 2; i++){
 		for ( j = i; j < n - 2; j++){
 			free(tab_sous_poly[i][j].tab_corde);
 		} 
-	}
+	}*/
 
 }
 
