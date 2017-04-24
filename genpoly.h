@@ -28,5 +28,6 @@ float coutcorde(point poly[],corde c);
 float coutcorde2(corde2 c);
 
 float coutsol(int n,point poly[],corde solution[]);
+float coutsol2(int n,corde2 solution[]);
 
 #endif
