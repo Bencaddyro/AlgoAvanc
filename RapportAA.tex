@@ -1,0 +1,127 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[frenchb]{babel}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\graphicspath{{png/}}
+%opening
+\title{Algorithmique avancée : Rapport du projet}
+\author{FOURNIER Benoit, THIERRY Constance}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[b]
+\begin{center}
+\includegraphics[scale=1]{Enssat.png}
+\end{center}
+\end{figure}
+
+\thispagestyle{empty}
+
+\newpage
+\null
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+
+\hfill
+
+\listoffigures
+
+\newpage
+\null
+\thispagestyle{empty}
+\newpage
+
+\section{Introduction}
+
+\section{Etude préliminaire}
+
+\subsection{Nombre de cordes distinctes dans un polygone à \emph{n} sommets}
+
+\paragraph{Propriété :}
+Appelons \emph{NbCordesDistinctes(n)} le nombre de cordes distinctes que l'on peut dénombrer dans un polygone à \emph{n} sommets.
+Nous avons alors :
+
+\begin{equation} 
+\begin{array}{r @{=} l}
+NbCordesDistinctes(n) \ & \ 2(n-3) + \sum_{i=0}^{n-4} i \\
+		      & \ 2(n-3) + \frac{(n-4)(n-3)}{2} \\
+		      & \ \frac{n(n-3)}{2}
+\end{array} 
+\end{equation}
+
+
+\begin{proof}
+Pour \(n = 4\) nous avons : \(NbCordesDistinctes(4)=2 \) la propriété est vérifiée. \\
+Admetons la propriété vrais à un rang \emph{n} et démontrons la au rang \emph{n+1}. \\
+Nous avons :\\
+\[NbCordesDistinctes(n+1) = (NombreDeNouvellesCordes) + NbCordesDistinctes(n)\]
+En effet, le résultat du problème au rang \emph{n+1} est égal à celui du rang \emph{n} auquel on ajoute les nouvelles cordes apparues.
+Ce nombre de nouvelles cordes est égale à \(n - 2 + 1 \) car lorsque l'on considère un sommet supplémentaire, celui-ci peut ce lier aux n anciens sommets.
+On lui retire les deux sommets qui lui sont adjacents, et on rajoute une liaison entre ces deux sommets adjacents.
+
+%%TODO: ajouter un shéma car pas évident
+
+\[
+\begin{array}{r @{=} l}
+NbCordesDistinctes(n+1) \ & \ n -  2 + 1 + NbCordesDistinctes(n) \\
+			  & \ n - 1 + \frac{n(n-3)}{2} \\
+			  & \ \frac{{n^2}-n-2}{2} \\
+			  & \ \frac{(n+1)(n-2)}{2} \\
+\end{array}
+\]
+Ce qui achève la récurrence.	
+\end{proof}
+
+
+\subsection{Nombre de cordes pour les triangulation d'un polygone à \emph{n} sommets}
+
+\paragraph{Propriété :}  
+Appelons \emph{NbCordesTriang(n)} le nombre de cordes présentent dans une triangulation d'un polygone à \emph{n} sommets.
+Toutes les triangulations d'un polygone à \emph{n} sommets comportent le même nombre de cordes \emph{NbCordesTriang(n)}.
+De plus nous avons :
+\begin{equation} 
+NbCordesTriang(n) = n-3
+\end{equation}
+
+\begin{proof}
+Pour \(n = 4\) nous avons : \(NbCordesTriang(4) = 1 \) la propriété est vérifiée. \\
+%TODO : ajouter trop beaux shéma
+Admetons la propriété vrais à un rang \emph{n} et démontrons la au rang \emph{n+1}. \\
+Considerons un polygone à \emph{n+1} sommets, en traçant une corde entre les sommets \emph{i} et \emph{i+2} on génère un sous polygone de taille \emph{n}.
+Le nombre de cordes d'une triangulation d'un polygone de taille \emph{n+1} est donc égale au nombre de cordes du sous polygone de taille \emph{n} au quel on ajoute une corde.
+Nous avons :\\
+\[
+\begin{array}{r @{=} l}
+NbCordesTriang(n+1) \ & \  1 corde + NbCordesTriang(n) \\
+			  & \ 1 + (n-3) \\
+			  & \ (n+1) - 3
+\end{array}
+\]
+Ce qui achève la récurrence.
+\end{proof}
+
+
+\section{Essais successifs}
+
+\section{Programmation dynamique}
+
+\subsection{Formule de récurrence}
+
+\subsection{Algorithme}
+
+\subsection{Compléxité spatiale et temporelle}
+
+\subsection{Améliorations possibles}
+
+\section{Algorithme glouton}
+
+\section{Conclusion}
+
+
+\end{document}
