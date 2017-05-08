@@ -73,7 +73,12 @@ En effet, le résultat du problème au rang \emph{n+1} est égal à celui du ran
 Ce nombre de nouvelles cordes est égale à \(n - 2 + 1 \) car lorsque l'on considère un sommet supplémentaire, celui-ci peut ce lier aux n anciens sommets.
 On lui retire les deux sommets qui lui sont adjacents, et on rajoute une liaison entre ces deux sommets adjacents.
 
-%%TODO: ajouter un shéma car pas évident
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{dem1.png}
+\caption{Schéma explicatif du nombre de cordes distinctes d'un polygone}
+\end{center}
+\end{figure}
 
 \[
 \begin{array}{r @{=} l}
@@ -115,11 +120,60 @@ Ce qui achève la récurrence.
 \end{proof}
 
 
+
+
+
 \section{Essais successifs}
 
 \section{Programmation dynamique}
 
 \subsection{Formule de récurrence}
+
+
+
+On appelera t la taille du sous-problème débutant au sommet \(s_i\), on défini ainsi le sous problème \(T_{i,t}\).
+Pour résoudre le sous problème \(T_{i,t}\) de triangulation d'un polygone par Programmation dynamique nous considererons 3 cas:
+
+\begin{itemize}
+ \item Cas 1 : on trace une corde entre les sommets \(s_i\) et \(s_{i+t-2}\), puis l'on résoud le problème \(T_{i,t-1}\).
+ \item Cas 2 : on trace une corde entre \(s_{i+1}\) et \(s_{i+t-1}\) puis l'on résoud le problème \(T_{i+1,t-1}\).
+ \item Cas 3 : on considère un entier \emph{k} compris entre 2 et \emph{t-k}. On trace deux cordes, une entre \(s_{i}\) et \(s_{i+k}\) et une autre entre \(s_{i+k}\) et \(s_{i+t-1}\).
+ Puis l'on résoud les sous problèmes \(T_{i,k+1}\) et \(T_{i+k,t-k}\).
+\end{itemize}
+
+On déduit de ces 3 cas la formule de récurrence suivante pour un polygone convexe de taille n: 
+
+\begin{equation} 
+T_{i,n} = min 
+\begin{pmatrix} 
+ longueur(s_i, s_{i+t-2}) + T_{i,n-1} \\
+  longueur(s_{i+1}, s_{i+t-1}) + T_{i+1,n-1} \\
+  longueur(s_i, s_{i+k}) + longueur(s_{i+k}, s_{i+t-1}) + T_{i,k+1} + T_{i,n-k}
+\end{pmatrix}               
+\end{equation}
+
+Nous calculons ici la longueur d'une corde entre les sommets \(s_i\) et \(s_j\) grace à la fonction \( longueur(s_i, s_j) \). 
+
+\subsection{Algorithme}
+
+ 
+ 
+\subsection{Compléxité spatiale et temporelle}
+On utilise une structure tabulaire \((n-2)*(n-2)\) que l'on remplie diagonale par diagonale.
+%TODO : ajouter schéma tableau
+//
+procedure soldynamique( ent n, point poly[], corde2 solution[])
+var piou tab_sous_poly[n-2][n-2]; \\
+var ent i, j, \\
+debut \\
+  //Initialisation du tableau tab_sous_poly
+  pour i allant de 0 à n-2 faire \\
+  pour j allant de 0 à n-2 faire \\
+  tab_sous_poly[i][j].tab_corde <- nill;
+  fait;
+  fait;
+ 
+ 
 
 \subsection{Algorithme}
 
