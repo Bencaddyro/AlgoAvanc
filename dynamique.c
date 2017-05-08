@@ -6,7 +6,6 @@
 
 void print_piou(piou P){
 	int i = 0;
-	printf("____________________________________________________________________________________\n");
 	printf("somme corde = %d \n", P.somme_corde);
 	printf("nb cordes = %d \n", P.nb_corde);
 	printf("Tableau de corde \n");
@@ -15,10 +14,9 @@ void print_piou(piou P){
 		printf("point 1 : x = %d , y = %d , lon = %f \n", P.tab_corde[i].p1.x, P.tab_corde[i].p1.y, P.tab_corde[i].lon);
 		printf("point 2 : x = %d , y = %d , lon = %f \n", P.tab_corde[i].p2.x, P.tab_corde[i].p2.y, P.tab_corde[i].lon);
 	}
-	printf("____________________________________________________________________________________\n");
 }
 
-
+ 
 
 
 /*Remarque, voici ce à quoi ressemble tab_sous_poly
@@ -35,28 +33,30 @@ void print_piou(piou P){
 
 void soldynamique(int n,point poly[],corde2 solution[]){
 	piou tab_sous_poly[n-2][n-2];	//On ne remplira que le triangle suppérieur. 
-	int i,j,k,l,t,x,y;
-	int x1, y1;
-	int NB_sommets =3; //Correspond au nombre de sommets du sous-polygone (au minimum 4)
+	int i,j,k,l,t,x,y, x1, y1;
+	int ArraySize;
+	int nbCordeAjout;	
+	int NB_sommets =4; //Correspond au nombre de sommets du sous-polygone (au minimum 4)
+	int nbCordesArray1, nbCordesArray2 = 0;
+	int temp1, temp2, tempNb;
+	int increment = 2;
+	int somme_corde_min;
+	int somme_corde_2 ;
 
-	x1=0; y1=0;
 
 	//Initialisation de tab_sous_poly
+	for(i=0; i<n-2; i++){
+		for(j=0;j<n-2; j++){
+			tab_sous_poly[i][j].tab_corde = NULL;
+		}
+	}
+
 	//printf("DEBUT INITIALISATION  \n");
 	for(i = 0; i < n-2 ; i++){
 		//printf("i = %d \n",i);
 		corde2 c;	//Création de la corde
 		c.p1 = poly[i];
 		c.p2 = poly[i+2];
-		//Attention pour le tracer des 2 derniéres cordes (Sn-1,S0) et (Sn,S1) d'ou le if
-		/*if(i == n - 2){
-			c.p1 = poly[i];
-			c.p2 = poly[0]; 
-		}
-		if(i == n - 1){
-			c.p1 = poly[i];
-			c.p2 = poly[1]; 
-		}*/
 		c.lon = coutcorde2(c);
 		//1ère diagonale du tableau
 		tab_sous_poly[i][i].somme_corde = c.lon;
@@ -67,169 +67,192 @@ void soldynamique(int n,point poly[],corde2 solution[]){
 	}
 	//printf("FIN INITIALISATION \n");
 	
-	printf("DEBUT PARCOURS TABLEAU \n");
-	int increment = 2;
-	int save;
+	//printf("DEBUT PARCOURS TABLEAU \n");
+
 	for(j = 1; j < n-3; j++){	
-		NB_sommets ++;
 		increment ++;
-		save = NB_sommets;
 		for(i = 0; i < (n - j - 2); i++){
 			t = j + i;
-			//printf("Création de la corde  \n");
-			//Création de la corde 
-				corde2 c;
-				c.p1 = poly[i];
-				c.p2 = poly[i + increment];
-				
-				/*if ( t == n - 2){
-					c.p1 = poly[i];
-					c.p2 = poly[0];
-				} 
-				if ( t == n - 1){
-					c.p1 = poly[i];
-					c.p2 = poly[1];
-				} */
-
-				x = i;	
-				y = t - 1;
-
-				c.lon = coutcorde2(c);
-				NB_sommets = t - i +1 ;
-
-
+			NB_sommets = increment +  1 ; //Nombre de sommet du sous polygonne allant du sommet i au sommet i+increment 
 			
-			//printf("Recherche \n");
-			// Coordonées x,y utilsées pour garder en mémoir la meilleur case du tableau
+			
+			//Création de la corde 
+			corde2 c;
+			c.p1 = poly[i];
+			c.p2 = poly[i + increment];
+			c.lon = coutcorde2(c);
+			
+			
+			// Coordonées x,y utilsées pour garder en mémoire la meilleur case du tableau 
+			x = i;	
+			y = t - 1;
+			//On regarde la case associée à la corde allant de i à i+increment-1
+			somme_corde_min = tab_sous_poly[x][y].somme_corde + c.lon;
+			somme_corde_2 = 0 ;
 
-			int somme_corde_min = tab_sous_poly[x][y].somme_corde + c.lon;
-			int somme_corde_2 = 0 ;
+			//printf("___________________________________________________________________________________\n");
+			//printf("nb sommets %d \n", NB_sommets);
+			//printf("i = %d \n", i);
+			//printf("t = %d \n", j+i);
 
-
-		
-			//Attention quand 4 sommets on regarde que 2 cordes 
-			/*if(NB_sommets == 4 ){
-				somme_corde_2 = tab_sous_poly[i+1][t].somme_corde + c.lon;
-				if ( somme_corde_2 < somme_corde_min){
-					somme_corde_min = somme_corde_2;
-					//ATTENTION on "inverse" x et y pour le tableau au lieu de regarder (1,2) on va regarder (2,1)
-					x = i+1;
-					y = t;
-				}
-			}*/
-
-
-			printf("nb sommets %d \n", NB_sommets);
-
-			printf("j = %d \n", j);
-			printf("i = %d \n", i);
-			printf("t = %d \n", j+i);
-
+			//On regarde la case associée à la corde allant de i+1 à i+increment
 			somme_corde_2 = tab_sous_poly[i+1][t].somme_corde + c.lon;
-			printf("s1=%d     s2=%d  \n",somme_corde_min,somme_corde_2);
+			//printf("s1=%d     s2=%d  \n",somme_corde_min,somme_corde_2);
+			//On compare les deux longeures observées et on conserve la case du tableau donnant la longueur minimale
 			if ( somme_corde_2 < somme_corde_min){
 				somme_corde_min = somme_corde_2;
 				x = i+1;
 				y = t;
 			}
+			nbCordeAjout = tab_sous_poly[x][y].nb_corde;
+			nbCordesArray1 = nbCordeAjout;
+			//printf("x=%d     y=%d  \n", x,y);
 
-			printf("x=%d     y=%d  \n", x,y);
-
-			if(NB_sommets > 5){
+			//On regarde les cases associées aux cordes allant de i à i+k et de i+k+1 à i+increment (k allant de 2 au nombre de sommets du sous polygone - 3)
+			if(NB_sommets >= 5){
 				for(k = 2 ; k <= NB_sommets - 3; k++){	
-					somme_corde_2 = tab_sous_poly[i][k+1].somme_corde + tab_sous_poly[i+k][t-k].somme_corde + c.lon;
-					printf("somme corde=%d     somme corde 2=%d \n", somme_corde_min, somme_corde_2);
+					if(k==2){
+						somme_corde_2 = tab_sous_poly[i][i+k-2].tab_corde[0].lon  + tab_sous_poly[i+k][t].somme_corde + c.lon; 
+						tempNb = tab_sous_poly[i+k][t].nb_corde + 1;
+						temp1 = 1;
+						temp2 = tab_sous_poly[i+k][t].nb_corde;
+					}
+					if((k>2) && (k==NB_sommets - 3)){
+						somme_corde_2 = tab_sous_poly[i][i+k-2].somme_corde + tab_sous_poly[i+k][t].tab_corde[0].lon + c.lon; 
+						tempNb = tab_sous_poly[i][i+k-2].nb_corde + 1;
+						temp1 = tab_sous_poly[i][i+k-2].nb_corde;
+						temp2 = 1;
+					}
+					if((k>2) && (k<NB_sommets - 3)){
+						somme_corde_2 = tab_sous_poly[i][i+k-2].somme_corde + tab_sous_poly[i+k][t].somme_corde + c.lon;	
+						tempNb = tab_sous_poly[i][i+k-2].nb_corde + tab_sous_poly[i+k][t].nb_corde;
+						temp1 = tab_sous_poly[i][i+k-2].nb_corde ;
+						temp2 = tab_sous_poly[i+k][t].nb_corde;
+					}
+
+					//printf("somme corde=%d     somme corde 2=%d \n", somme_corde_min, somme_corde_2);
 					if ( somme_corde_2 < somme_corde_min){
 						somme_corde_min = somme_corde_2;
-						//Même remarque que au dessus pour le tableau et x,y
-						printf("x=%d     y=%d  x1=%d y1=%d \n", x,y,x1,y1);
 						x = i;
-						y = k + 1 - 2;
-						x1 = i + k;
-						y1 = NB_sommets - k - 2;
-						printf("x=%d     y=%d  x1=%d y1=%d \n", x,y,x1,y1);
+						y = i + k - 2;
+						x1 = i+k;
+						y1 = t;
+						nbCordeAjout = tempNb;
+						nbCordesArray1 = temp1;
+						nbCordesArray2 = temp2;
+						//printf("x=%d     y=%d  x1=%d. y1=%d \n", x,y,x1,y1);
 					}
 				}
 			}
 
+			//printf("nbCordesArray1 = %d nbCordesArray2 = %d \n", nbCordesArray1, nbCordesArray2);
+			
+			//printf("Fin recherche \n");
 
 			
-//printf("Fin recherche \n");
-
-
-			//printf("corde A AJOUTER", i);
-			
-			printf("Ajout de la corde  \n");
+			//printf("Ajout de la corde  \n");
 			//Enregistrement dans notre tableau de corde
-			int ArraySize;
-
 
 			tab_sous_poly[i][t].somme_corde = somme_corde_min;
-			tab_sous_poly[i][t].nb_corde = tab_sous_poly[x][y].nb_corde + 1; //le +1 est pour la nouvelle corde ajoutée
+			tab_sous_poly[i][t].nb_corde = nbCordeAjout + 1; //le +1 est pour la nouvelle corde ajoutée
+			
 			ArraySize = tab_sous_poly[i][t].nb_corde;
-			printf("x = %d , y = %d \n", x,y);
 			tab_sous_poly[i][t].tab_corde = malloc(ArraySize*sizeof(corde2));
+
 			if (tab_sous_poly[i][t].tab_corde == NULL) {
   				fprintf(stderr, "malloc failed\n");
 			}
+			
+			//Enregistrement de la corde c
+			tab_sous_poly[i][t].tab_corde[0] = c  ;
 
-
-			printf("Cordes tot = %d \n",ArraySize);
-			//Enregistrement du tableau de corde 
-			for(l = 0; l < (ArraySize - 1); l++){
-				tab_sous_poly[i][t].tab_corde[l] = tab_sous_poly[x][y].tab_corde[l] ;
+			//Enregistrement du/des tableau(x) de cordes  
+			for(l = 0; l < nbCordesArray1 ; l++){
+				tab_sous_poly[i][t].tab_corde[l+1] = tab_sous_poly[x][y].tab_corde[l] ;
 			}
 			
-			//printf("suite \n");
-			//Enregistrement de la corde c
-			tab_sous_poly[i][t].tab_corde[ArraySize-1] = c  ;
-			print_piou(tab_sous_poly[i][t]);
-			//Cas ou on doit enregistrer deux tableaux de cordes et non pas un seul
-			if ( x1 != 0 && y1 != 0){
-				printf("Ajout de 2 tableau de corde \n");
-				int NewSize;	// Taille lors de l'aggrandissement du tableau
-				tab_sous_poly[i][t].nb_corde += tab_sous_poly[x1][y1].nb_corde;
-				NewSize = tab_sous_poly[i][t].nb_corde ; 
-				//On réaloue de l'espace pour le tableau
-				tab_sous_poly[i][t].tab_corde = realloc (tab_sous_poly[i][t].tab_corde, (NewSize) * sizeof (corde2));
-				for (l = ArraySize; l < NewSize; l++){
- 					tab_sous_poly[i][t].tab_corde[l] = tab_sous_poly[x1][y1].tab_corde[l - ArraySize];
+			if(nbCordesArray2 != 0){
+ 				for(l = 0; l < nbCordesArray2 ; l++){
+					tab_sous_poly[i][t].tab_corde[l + nbCordesArray1 + 1] = tab_sous_poly[x1][y1].tab_corde[l] ;
 				}
-				x1 = 0;
-				y1 = 0;
-				print_piou(tab_sous_poly[i][t]);
+				nbCordesArray2 = 0;
 			}
-			NB_sommets = save;
-
+			
+			//print_piou(tab_sous_poly[i][t]);
 						
 		}		
 	}
+
+	//On a fini de remplir notre tableau, nous allons maintenant choisir la meilleure solution, pour ce faire nous allons comparer les différentes solutions possibles
 	if ( tab_sous_poly[0][n-4].somme_corde < tab_sous_poly[1][n - 3].somme_corde){
 		x = 0;
 		y = n - 4;
 	}
 	else{
+
 		x = 1;
 		y = n - 3;
 	}
-	print_piou(tab_sous_poly[0][n-4]);
-	print_piou(tab_sous_poly[1][n-3]);
-	
-	printf("ENREGISTREMENT SOLUTION FINAL \n");
-	printf("x=%d y=%d \n",x,y);
-	//On enregistre la solution dans le tableau de solution
-	for (i = 0; i < tab_sous_poly[x][y].nb_corde; i++){
-		solution[i] = tab_sous_poly[x][y].tab_corde[i];
-		//printf(" i = %d \n",i);
-	}
-	print_piou(tab_sous_poly[x][y]);
+	somme_corde_min = tab_sous_poly[x][y].somme_corde;
+	nbCordesArray1 = tab_sous_poly[x][y].nb_corde;
 
-	printf("Fin  enregistrement\n");
-	/*for ( i = 0; i < n - 2; i++){
-		for ( j = i; j < n - i; j++){
-			free(tab_sous_poly[i][j].tab_corde);
-		} 
-	}*/
+	if(n >= 5){
+		for(k = 2 ; k <= n - 3; k++){	
+			if(k==2){
+				somme_corde_2 = tab_sous_poly[0][0].tab_corde[0].lon  + tab_sous_poly[2][n-3].somme_corde; 
+				nbCordeAjout = tab_sous_poly[2][n-3].nb_corde + 1;
+				temp1 = 1;
+				temp2 = tab_sous_poly[2][n-3].nb_corde;
+			}
+			if(k==n - 3){
+				somme_corde_2 = tab_sous_poly[0][n-5].somme_corde + tab_sous_poly[n-3][n-3].tab_corde[0].lon;  
+				nbCordeAjout = tab_sous_poly[0][n-5].nb_corde + 1;
+				temp1 = tab_sous_poly[0][n-5].nb_corde;
+				temp2 = 1;
+			}
+			if((k>2) && (k < n - 3)){
+				somme_corde_2 = tab_sous_poly[0][k-2].somme_corde + tab_sous_poly[k][n-3].somme_corde;	
+				nbCordeAjout = tab_sous_poly[0][k-2].nb_corde + tab_sous_poly[k][n-3].nb_corde;
+				temp1 = tab_sous_poly[0][k-2].nb_corde ;
+				temp2 = tab_sous_poly[k][n-3].nb_corde;
+			}
+			//printf("somme corde=%d     somme corde 2=%d \n", somme_corde_min, somme_corde_2);
+			if ( somme_corde_2 < somme_corde_min){
+				somme_corde_min = somme_corde_2;
+				x = 0;
+				y = k - 2;
+				x1 = k;
+				y1 = n-3;
+				nbCordesArray1 = temp1;
+				nbCordesArray2 = temp2;
+				//printf("x=%d     y=%d  x1=%d. y1=%d \n", x,y,x1,y1);
+			}			
+		}
+	}
+	
+	//printf(" ENREGISTREMENT SOLUTION FINAL \n");
+	//On enregistre la solution dans le tableau de solution
+	//printf("nbCordesArray1 = %d nbCordesArray2 = %d \n", nbCordesArray1, nbCordesArray2);
+
+	for (l = 0; l < nbCordesArray1 ; l++){
+		solution[l] = tab_sous_poly[x][y].tab_corde[l] ;
+	}
+	if(nbCordesArray2 != 0){
+ 		for(l = 0; l < nbCordesArray2 ; l++){
+			solution[l + nbCordesArray1] = tab_sous_poly[x1][y1].tab_corde[l] ;
+		}
+	}
+
+	/*printf("Fin  enregistrement\n");
+	
+	printf("____________________________________________________________________________________\n");
+
+	for (i = 0; i < n-3; i++){
+		printf("corde %d \n", i);
+		printf("point 1 : x = %d , y = %d , lon = %f \n", solution[i].p1.x, solution[i].p1.y, solution[i].lon);
+		printf("point 2 : x = %d , y = %d , lon = %f \n", solution[i].p2.x, solution[i].p2.y, solution[i].lon);
+	}
+		printf("____________________________________________________________________________________\n");*/
 
 }
 
