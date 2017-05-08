@@ -75,7 +75,7 @@ On lui retire les deux sommets qui lui sont adjacents, et on rajoute une liaison
 
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[scale=0.5]{dem1.png}
+\includegraphics[scale=1]{dem1.png}
 \caption{Schéma explicatif du nombre de cordes distinctes d'un polygone}
 \end{center}
 \end{figure}
@@ -106,7 +106,8 @@ NbCordesTriang(n) = n-3
 Pour \(n = 4\) nous avons : \(NbCordesTriang(4) = 1 \) la propriété est vérifiée. \\
 %TODO : ajouter trop beaux shéma
 Admetons la propriété vrais à un rang \emph{n} et démontrons la au rang \emph{n+1}. \\
-Considerons un polygone à \emph{n+1} sommets, en traçant une corde entre les sommets \emph{i} et \emph{i+2} on génère un sous polygone de taille \emph{n}.
+Considerons un polygone à \emph{n+1} sommets, en traçant une	int;
+	int increment = 2; corde entre les sommets \emph{i} et \emph{i+2} on génère un sous polygone de taille \emph{n}.
 Le nombre de cordes d'une triangulation d'un polygone de taille \emph{n+1} est donc égale au nombre de cordes du sous polygone de taille \emph{n} au quel on ajoute une corde.
 Nous avons :\\
 \[
@@ -156,28 +157,60 @@ Nous calculons ici la longueur d'une corde entre les sommets \(s_i\) et \(s_j\) 
 
 \subsection{Algorithme}
 
- 
+  
+\begin{tabbing}
+\hspace{0.5cm} \= \hspace{0.5cm}  \= \hspace{0.5cm} \= \hspace{0.5cm} \= \kill
+
+procédure soldynamique(ent n, point poly[], corde2 solution[]);
+var piou tabSousPoly[n-2][n-2];
+var ent i,j,k,l,t,x,y, x1, y1,  temp1, temp2, tempNb;
+var increment <- 2;
+var ent NbSommets <- 4; //Correspond au nombre de sommets du sous-polygone (au minimum 4)
+var ent ArraySize;
+var ent  nbCordeAjout;	
+var ent nbCordesArray1, nbCordesArray2 = 0;
+var ent sommeCorde_min;
+var ent sommeCorde_2 ;
+
+\textit{//Initialisation de la première diagonale de tabSousPoly}\\
+pour i allant de 0 à n-2 faire\\
+  \> création de la corde c entre les sommets \(s_i\) et \(s_{i+2}\) \\
+  \> tab_sous_poly[i][i].somme_corde <- c.lon; \\
+  \> \textit{//On ne regarde qu'une seule corde à cette étape} \\
+  \> tabSousPoly[i][i].nbCorde <- 1; \\
+  \> tabSousPoly[i][i].tabCorde[0] <- c ;
+finpour\\
+\\
+\textit{//Boucle principale pour remplir le tableau tabSousPoly }\\
+pour j de 1 à n-3 faire\\
+    \> increment <- increment +1;\\ 
+    \> pour i allant de 0 à (n-j-2) faire\\
+        \> \> t <- j+i\\
+	\> \> création de la corde c entre les sommets \(s_i\) et \(s_{i+increment}\) \\
+	\> \> \textit{//On utilise les variables x et y pour garder en mémoire la meilleure case du tableau }\\  
+	\> \> \textit{//Cas 1} \\
+	\> \> sommeCordeMin = longueur(s_i, s_{i+t-2}) + T_{i,n-1} + c.lon; \\
+	\> \> enregister case
+	\> \> \textit{//Cas 2} \\
+	\> \> sommeCorde2 <- longueur(s_{i+1}, s_{i+t-1}) + T_{i+1,n-1} + c.lon; \\
+	\> \> si sommeCorde2 < sommeCordeMin alors \\
+	  \> \> \> x<-i+1; \\
+	  \> \> \> y<-t; \\
+	\> \> fin si; \\
+	\> \> nbCordeAjout <- tab_sous_poly[x][y].nb_corde; \\
+	\> \> nbCordesArray1 <- nbCordeAjout; \\
+	\> \> \textit{//Cas 3} \\
+	\> \> si NbSommets >= 5 faire \\
+	  \> \> \> pour k allant de 2 à NbSommets-3 faire \\
+	  \> \> \> \>  sommeCorde2 <- longueur(s_i, s_{i+k}) + longueur(s_{i+k}, s_{i+t-1}) + T_{i,k+1} + T_{i,n-k}
+
+  
+finpour\\
+\end{tabbing}
  
 \subsection{Compléxité spatiale et temporelle}
 On utilise une structure tabulaire \((n-2)*(n-2)\) que l'on remplie diagonale par diagonale.
 %TODO : ajouter schéma tableau
-//
-procedure soldynamique( ent n, point poly[], corde2 solution[])
-var piou tab_sous_poly[n-2][n-2]; \\
-var ent i, j, \\
-debut \\
-  //Initialisation du tableau tab_sous_poly
-  pour i allant de 0 à n-2 faire \\
-  pour j allant de 0 à n-2 faire \\
-  tab_sous_poly[i][j].tab_corde <- nill;
-  fait;
-  fait;
- 
- 
-
-\subsection{Algorithme}
-
-\subsection{Compléxité spatiale et temporelle}
 
 \subsection{Améliorations possibles}
 
@@ -202,6 +235,9 @@ On dispose d'un fonction "coutcorde(corde c)" qui renvoie la longueur d'une cord
  
 \begin{tabbing}
 \hspace{0.5cm} \= \hspace{0.5cm}  \= \hspace{0.5cm} \= \hspace{0.5cm} \= \kill
+ 
+\begin{tabbing}
+\hspace{0.5cm} \= \hspace{0.5cm}  \= \hspace{0.5cm} \= \hspace{0.5cm} \= \kill
 
 
 \textit{//initialisation de Exterieur}\\
@@ -211,13 +247,13 @@ faire\\
 finpour\\
 \\
 \textit{//Boucle principale pour remplir le tableau de solution}\\
-pour k de 1 à n-3\\
+pour k de 1 à n-3\\\> \> \textit{//Cas 1} \\
 faire\\
     \> min:= $+\infty$ \\ 
     \> pour i de 0 à n\\
     \> faire\\
         \> \> si P[i] est dans Exterieur\\
-        \> \> alors\\
+        \> \> alors\\KH
             \> \> \> c:=corde excluant P[i]\\
             \> \> \> si coutcorde(c)<min\\
             \> \> \> alors\\
@@ -230,7 +266,6 @@ faire\\
     \> Retirer P[indice] de Exterieur\\
 finpour\\
 \end{tabbing}
- 
 
 Cet algorithme a une complexité en $O(n2)$ (en pratique $O(n2log(n)$ pour la recher de de la corde excluant P[i] complexité du a notre impléméentation) ce qui est ? Comparé au algorithme précedemet étudié.
 Néanmoins cette algorithme ne garantie pas l'exactitude de la solution, mais seulement une approximation.
