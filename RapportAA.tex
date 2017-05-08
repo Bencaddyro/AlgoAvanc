@@ -39,15 +39,15 @@
 
 \section{Introduction}
 
-La triangularisation de polygone est un problème ()?) 
-utilisé dans la modélisation 2d et 3d et permet de subdiviser un polygone en un ensemble de triangle.
-Nous nous interessons ici au sous-cas des polygone convexe avec pour contrainte une (distance de traingularisation) la plus faible possible.
-L'objectif de cette etude et de comparer différentes solutions algorithmque pour résoudre ce problème.
-Nous commencerons par exposer les methodes dite d'essai successif puis de programmation dynamqieu et enfin un algoritme glouton.
-Nous comparerons ensuiste leur performances et nous concluerons sur ces différentes méthodes
+La triangularisation de polygone est un problème de géométrie visant à subdiviser un polygone en triangle.
+Nous nous interessons ici au sous-cas des polygones convexes avec contrainte d'optimalité sur les cordes.
+La somme de toutes les cordes composant la triangularisation doit être minimale.
+L'objectif de cette étude et de comparer différentes solutions algorithmique pour résoudre ce problème.
+Nous commencerons par exposer les méthodes d'essai successif puis de programmation dynamique et enfin un algorithme glouton.
+Nous comparerons ensuite leur performances et nous concluerons sur ces différentes méthodes
 
 
-\section{Etude préliminaire}
+\section{Étude préliminaire}
 
 \subsection{Nombre de cordes distinctes dans un polygone à \emph{n} sommets}
 
@@ -75,7 +75,7 @@ On lui retire les deux sommets qui lui sont adjacents, et on rajoute une liaison
 
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[scale=0.5]{dem1.png}
+\includegraphics[scale=1]{dem1.png}
 \caption{Schéma explicatif du nombre de cordes distinctes d'un polygone}
 \end{center}
 \end{figure}
@@ -92,7 +92,7 @@ Ce qui achève la récurrence.
 \end{proof}
 
 
-\subsection{Nombre de cordes pour les triangulation d'un polygone à \emph{n} sommets}
+\subsection{Nombre de cordes pour les triangulations d'un polygone à \emph{n} sommets}
 
 \paragraph{Propriété :}  
 Appelons \emph{NbCordesTriang(n)} le nombre de cordes présentent dans une triangulation d'un polygone à \emph{n} sommets.
@@ -106,7 +106,7 @@ NbCordesTriang(n) = n-3
 Pour \(n = 4\) nous avons : \(NbCordesTriang(4) = 1 \) la propriété est vérifiée. \\
 %TODO : ajouter trop beaux shéma
 Admetons la propriété vrais à un rang \emph{n} et démontrons la au rang \emph{n+1}. \\
-Considerons un polygone à \emph{n+1} sommets, en traçant une corde entre les sommets \emph{i} et \emph{i+2} on génère un sous polygone de taille \emph{n}.
+Considérons un polygone à \emph{n+1} sommets, en traçant une corde entre les sommets \emph{i} et \emph{i+2} on génère un sous polygone de taille \emph{n}.
 Le nombre de cordes d'une triangulation d'un polygone de taille \emph{n+1} est donc égale au nombre de cordes du sous polygone de taille \emph{n} au quel on ajoute une corde.
 Nous avons :\\
 \[
@@ -121,10 +121,47 @@ Ce qui achève la récurrence.
 
 
 
-
-
 \section{Essais successifs}
 
+
+\subsection{Fonction annexe : validecorde()}
+
+
+Nous utiliserons pour la méthode d'essai successif une fonction \emph{validecorde()} nous permettant de savoir si une corde est valide, c'est à dire qu'elle ne coupe pas une autre corde déjà traçée.
+Ce problème peut se réduire à savoir si une corde en coupe une autre, si la corde donnée ne coupe aucune autre corde déjà présente alors elle est valide.
+Notons \emph{c(A,B)} la corde de sommet \emph{A,B} avec $A<B$ (les sommets étant numéroté et ordonnés).
+Soit \emph{c(A,B)} la corde déjà tracé et \emph{c(i,j)} la corde testée.
+Intéressons nous à la reconnaissance du cas ou la corde est valide, soit \emph{s(i,j)} est « au dessus » soit elle est en « dessous ».
+Ce qui donne $a<=i et j<=b$ (cas au dessous) ou $i<=a et j>=b$ (au dessus).
+Dans les autres cas les cordes se coupent.
+Il faut également distinguer le cas ou \emph{c(i,j)} est confondus avec \emph{c(A,B)}.
+ 
+
+\subsection{Première méthode}
+
+On se place dans une stratégie d'essai successif avec pour choix à l'étape i de prendre une corde valide issue de \emph{Si} où bien de ne rien prendre.
+Cette méthode n'est cependant pas très efficace et donneras souvent plusieur fois la même trinagularisation.
+La corde \emph{c(A,B)} pourra en effet être retenue au passage par l'étape \emph{A} mais aussi au passage par l'étape \emph{B}.
+L'exemple le pus simple pour illustrer cela est celui du quadrilatère,il ne possède que 2 triangulation possible, pourtant cette méthode fourniras 4 solutions.
+
+De plus cette méthode ne permet pas de trouver toutes les trinagulations, prenons un polygone à 8 cotés.
+La triangulation (1,3),(3,5),(5,7),(7,1),(1,5) ne pourras jamais être construite, en effet ces 5 cordes n'impliquent que 4 points.
+Plus généralement s'il y a plus de corde dans la triangulations que de sommet impliqués alors elle ne peut être trouvée.
+
+
+\subsection{}
+ 
+Principe Algorithmique
+
+ 
+
+Nous choisierons a l'étape i la corde la iéme corde de la solution (tableau de solution de taille n-3)
+
+a cette etape i on pourras choisir une corde valide dans l'ensemble des cordes du polygone non jamais pu d éja faire partie de la solution (pour éviter les doublon)
+
+ 
+
+ 
 \section{Programmation dynamique}
 
 \subsection{Formule de récurrence}
@@ -159,19 +196,10 @@ Nous calculons ici la longueur d'une corde entre les sommets \(s_i\) et \(s_j\) 
  
  
 \subsection{Compléxité spatiale et temporelle}
-On utilise une structure tabulaire \((n-2)*(n-2)\) que l'on remplie diagonale par diagonale.
+On utilise une structure tabulaire $(n-2)*(n-2)$ que l'on remplie diagonale par diagonale.
 %TODO : ajouter schéma tableau
-//
-procedure soldynamique( ent n, point poly[], corde2 solution[])
-var piou tab_sous_poly[n-2][n-2]; \\
-var ent i, j, \\
-debut \\
-  //Initialisation du tableau tab_sous_poly
-  pour i allant de 0 à n-2 faire \\
-  pour j allant de 0 à n-2 faire \\
-  tab_sous_poly[i][j].tab_corde <- nill;
-  fait;
-  fait;
+
+
  
  
 
@@ -232,7 +260,8 @@ finpour\\
 \end{tabbing}
  
 
-Cet algorithme a une complexité en $O(n2)$ (en pratique $O(n2log(n)$ pour la recher de de la corde excluant P[i] complexité du a notre impléméentation) ce qui est ? Comparé au algorithme précedemet étudié.
+Cet algorithme à une complexité en $O(n^2)$ (en pratique $O(n^2log(n^2)$ pour la recherche de la corde excluant P[i], complexité dù à notre implémentation).
+Cette complexité est ? comparé au algorithme précedement étudié.
 Néanmoins cette algorithme ne garantie pas l'exactitude de la solution, mais seulement une approximation.
 Nous verrons donc comment qualifer cette approximation au vu du jeu d'essai.
 
