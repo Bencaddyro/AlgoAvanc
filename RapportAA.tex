@@ -39,6 +39,14 @@
 
 \section{Introduction}
 
+La triangularisation de polygone est un problème ()?) 
+utilisé dans la modélisation 2d et 3d et permet de subdiviser un polygone en un ensemble de triangle.
+Nous nous interessons ici au sous-cas des polygone convexe avec pour contrainte une (distance de traingularisation) la plus faible possible.
+L'objectif de cette etude et de comparer différentes solutions algorithmque pour résoudre ce problème.
+Nous commencerons par exposer les methodes dite d'essai successif puis de programmation dynamqieu et enfin un algoritme glouton.
+Nous comparerons ensuiste leur performances et nous concluerons sur ces différentes méthodes
+
+
 \section{Etude préliminaire}
 
 \subsection{Nombre de cordes distinctes dans un polygone à \emph{n} sommets}
@@ -120,6 +128,62 @@ Ce qui achève la récurrence.
 \subsection{Améliorations possibles}
 
 \section{Algorithme glouton}
+
+
+\subsection{Principe algorithmique}
+
+On réduit le problème du choix des cordes au seules cordes extérieures, ce qui revient a choisir la plus courte et ré-iterer sur le sous polygone intérieur ainsi créer.
+
+On s'attend raisonablement à trouver une triangularisation de coût faible, sans pour autant avoir la certitude que celle ci est la plus optimale.
+
+\subsection{Mise en oeuvre}
+ 
+
+On dispose d'un ensemble « extérieur » contenant les points constituant le polygone en cour de triangularisation.
+On dispose d'un tableau de solution où inscrire les cordes
+On dispose d'un tableu des points ordonné (de cardinal n)
+On dispose d'un fonction "coutcorde(corde c)" qui renvoie la longueur d'une corde
+ 
+ 
+ 
+\begin{tabbing}
+\hspace{0.5cm} \= \hspace{0.5cm}  \= \hspace{0.5cm} \= \hspace{0.5cm} \= \kill
+
+
+\textit{//initialisation de Exterieur}\\
+pour i de 0 à n\\
+faire\\
+\> Ajouter P[i] à Exterieur\\
+finpour\\
+\\
+\textit{//Boucle principale pour remplir le tableau de solution}\\
+pour k de 1 à n-3\\
+faire\\
+    \> min:= $+\infty$ \\ 
+    \> pour i de 0 à n\\
+    \> faire\\
+        \> \> si P[i] est dans Exterieur\\
+        \> \> alors\\
+            \> \> \> c:=corde excluant P[i]\\
+            \> \> \> si coutcorde(c)<min\\
+            \> \> \> alors\\
+                \> \> \> \> min:=coutcorde(c)\\
+                \> \> \> \> indice:=i\\
+                \> \> \> \> solution[k]:=c\\
+            \> \> \> finsi\\
+        \> \> finsi\\
+    \> finpour\\
+    \> Retirer P[indice] de Exterieur\\
+finpour\\
+\end{tabbing}
+ 
+
+Cet algorithme a une complexité en $O(n2)$ (en pratique $O(n2log(n)$ pour la recher de de la corde excluant P[i] complexité du a notre impléméentation) ce qui est ? Comparé au algorithme précedemet étudié.
+Néanmoins cette algorithme ne garantie pas l'exactitude de la solution, mais seulement une approximation.
+Nous verrons donc comment qualifer cette approximation au vu du jeu d'essai.
+
+
+\section{Comparaison}
 
 \section{Conclusion}
 
