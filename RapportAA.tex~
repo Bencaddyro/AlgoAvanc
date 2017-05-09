@@ -125,84 +125,6 @@ Ce qui achève la récurrence.
 
 \section{Essais successifs}
 
-\subsection{Fonction validecorde()}
-
-
-Nous utiliserons pour la methode d'essai successif une fonction validecorde nous permettant de savoir si une corde est valide, c'est à dire qu'elle ne coupe pas d'autre corde déjà tracer.
-
-Ce problème se réduit à savoir si une corde en coupe une autre, si la corde donnée ne coupe aucune autre déjà tracé alors elle est valide.
-
-Notons c(sa,sb) la corde de sommet A,B avec A<B (les sommet étant numéroté et ordonné).
-
-Soit c(sa,sb) la corde déjà tracé et c(si,sj) la corde testée.
-Si les cordes ne se coupent pas alors il existe 2 cas de figure soit s(i,j) est « au dessus » soit elle est en « dessous » ce qui donne a<i;j<b (cas au dessous) ou i<a j>b (au dessus).
-
-Il faut également vérifier que les cordes soient bien distinctes.
- 
-\subsection{Première Approche}
- 
-
-On se place dans une stratégie d'essai successif avec pour choix à l'étape i de prendre une codre valide issue de Si ou bien de ne rien prendre. Cette méthode n'est pas très efficace et donneras souvent plusieur fois la meme trinagularisation. La corde (sa,sb) pourra en effet être retennue au passage par l'étape a mais aussi au passage par l'étape b. L'exemple le pus simple pour illuster cela est celui du quadrilatère qui ne possède que 2 triangulation, pourtant cette methode en donneras 4.
-De plus cette methode ne permet pas de trouver toute les trinagulation contre exemple :
-pour n=8, la triangulation (s1,s3),(s3,s5),(s5,s7),(s1,s7),(s1,s5). A plus forte raison toute triangulation possédant plus de cordes que de point servant a la trinagulation ne pourras être trouvé via cette méthode.
-
-\subsection{Deuxième Approche} 
-
-Principe Algorithmique
-
-Nous choisierons à l'étape i la corde pour la iéme place de la solution (tableau de solution de taille n-3).
-Nous choisirons cette corde parmis les $n(n-3)/2 - k$ cordes restantes avec $k<=i$.
-On incrémente k a chaque corde évalué (choisie ou non) de manière a ne jamais retomber deux fois sur la même solution.
-
-\subsection{Mise en oeuvre}
-
-//TODO pseudo code
-
-On suppose connu un tableau de toute les corde tabcorde
-
-\begin{tabbing}
-\hspace{0.5cm} \= \hspace{0.5cm}  \= \hspace{0.5cm} \= \hspace{0.5cm} \= \kill
-
-
-\textit{//initialisation de Exterieur}\\
-pour i de 0 à n\\
-faire\\
-\> Ajouter P[i] à Exterieur\\
-finpour\\
-\\
-\textit{//Boucle principale pour remplir le tableau de solution}\\
-pour k de 1 à n-3\\
-faire\\
-    \> min:= $+\infty$ \\ 
-    \> pour i de 0 à n\\
-    \> faire\\
-        \> \> si P[i] est dans Exterieur\\
-        \> \> alors\\
-            \> \> \> c:=corde excluant P[i]\\
-            \> \> \> si coutcorde(c)<min\\
-            \> \> \> alors\\
-                \> \> \> \> min:=coutcorde(c)\\
-                \> \> \> \> indice:=i\\
-                \> \> \> \> solution[k]:=c\\
-            \> \> \> finsi\\
-        \> \> finsi\\
-    \> finpour\\
-    \> Retirer P[indice] de Exterieur\\
-finpour\\
-\end{tabbing}
-
-Cette algorithme possède donc une compléxité temporelle très importante en $O(k^n$.
-Sa compléxité spatiale est en $O(n^2)$.
-
-\subsection{Elagage}
-
-Pour rejeter des appels récursif n'aboutissant pas à une solution il convient de limiter les choix sur les dernières cordes du tableu en effet si a l'étape i<n-3 on choisis la corde n*(n-3)/2 alors il ne reste plus aucune candidate pour le reste de la solution, il convient donc de limiter le choix des cordes possible au n*n-3/2 moins les k première et moins les n-3 - i dernières pour les laisser en dernier recours au places restantes. De cette manière on évite des appel inutiles.
-Une voie d'élagage (non implémenter) est celui de la vérification précoce de l'optimalité.
-En triant les cordes par longueur croissante on pourrait voir si une solution partielle à la possiblité d'être une meilleur solution que cellle déja trouvé.
-Il suffit de comparer son poid additioner au k-i poids des cordes suivantes, si le resultat est plus grand que le poid de la solution déja sauvgardé alors cette solution partielle ne seras jamais meilleur.
-
- 
-
 \section{Programmation dynamique}
 
 \subsection{Formule de récurrence}
@@ -380,14 +302,14 @@ La formule de récurrence de notre algorithme ce limiterait alors au cas 3. Dans
 
 \subsection{Principe algorithmique}
 
-On réduit le problème au seuls choix des cordes extérieures, ce qui revient à choisir la plus courte et ré-iterer sur le sous polygone intérieur ainsi créer.
+On réduit le problème du choix des cordes au seules cordes extérieures, ce qui revient a choisir la plus courte et ré-iterer sur le sous polygone intérieur ainsi créer.
 
 On s'attend raisonablement à trouver une triangularisation de coût faible, sans pour autant avoir la certitude que celle ci est la plus optimale.
 
 \subsection{Mise en oeuvre}
  
 
-On dispose d'un ensemble « Extérieur » contenant les points constituant le polygone en cour de triangularisation.
+On dispose d'un ensemble « extérieur » contenant les points constituant le polygone en cour de triangularisation.
 On dispose d'un tableau de solution où inscrire les cordes
 On dispose d'un tableu des points ordonné (de cardinal n)
 On dispose d'un fonction "coutcorde(corde c)" qui renvoie la longueur d'une corde
@@ -426,26 +348,12 @@ finpour\\
 \end{tabbing}
  
 
-Cet algorithme à donc une complexité en $O(n^2)$ (en pratique $O(n^2log(n)$ pour la recherche de la corde excluant P[i], complexité du à notre impléméentation).
+Cet algorithme a une complexité en $O(n2)$ (en pratique $O(n2log(n)$ pour la recher de de la corde excluant P[i] complexité du a notre impléméentation) ce qui est ? Comparé au algorithme précedemet étudié.
+Néanmoins cette algorithme ne garantie pas l'exactitude de la solution, mais seulement une approximation.
+Nous verrons donc comment qualifer cette approximation au vu du jeu d'essai.
 
-Sa complexité spatiale quand à elle est en $O(n)$.
 
 \section{Comparaison}
-
-En comparant l'optimalité de la solution exacte par rapport à celle donnée par l'algorithme glouton nous pouvons observer que même lorsque n augmente sa valeur (ici en pourcentage d'erreur) reste très faible, inférieur à $0,5%$
-Ce qui est très acceptable dans la plupart des situations. Nous avons réalisé cette étude en moyennant l'erreur sur 1000 comparaison entre triangulation par la methode exacte et celle, approximative de l'algorithme glouton.
-
-//TODO inserer benchmark2.png
-//pourcentage d'erreur en donction de n
-
-
-En s'interessant maintenant au temps d'exécution on retrouve bien les différentes classe de compléxité :
-
-//TODO inserer benchmark.png
-//temps d'éxécution(ms) en fonction de n (échelle log)
-
-Nous voyons bien ici la compléxité exponetielle de l'essai successif.
-Nous confirmons aussi la classe de compléxité similaire entre programation dynamique et algorithme glouton avec un nette avantgae pour ce dernier quand n vient a augmenter.
 
 \section{Conclusion}
 

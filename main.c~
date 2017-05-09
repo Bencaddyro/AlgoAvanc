@@ -90,7 +90,7 @@ end=clock();
 sum1+=(double)(end - begin) / CLOCKS_PER_SEC;
 
 
-//printf("valeur de la solution algo glouton : %f\n",coutsol(n,poly,solution));
+printf("valeur de la solution algo glouton : %f\n",coutsol(n,poly,solution));
 
 //tracersol(n,poly,solution);
 
@@ -99,15 +99,15 @@ begin=clock();
 end=clock();
 sum2+=(double)(end - begin) / CLOCKS_PER_SEC;
 
-  //tracersol2(n,poly,solution2);
- //printf("valeur de la solution algo dynamique : %f\n",coutsol2(n,solution2));  
+  tracersol2(n,poly,solution2);
+ printf("valeur de la solution algo dynamique : %f\n",coutsol2(n,solution2));  
 
 begin=clock();
   solessai(n,poly,solution);
 end=clock();
 sum3+=(double)(end - begin) / CLOCKS_PER_SEC;
 
- //printf("valeur de la solution essai successif : %f\n",coutsol(n,poly,solution));
+ printf("valeur de la solution essai successif : %f\n",coutsol(n,poly,solution));
 
   //attendreTouche(&ok);
 	ok--;
