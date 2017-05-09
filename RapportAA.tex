@@ -106,7 +106,8 @@ NbCordesTriang(n) = n-3
 Pour \(n = 4\) nous avons : \(NbCordesTriang(4) = 1 \) la propriété est vérifiée. \\
 %TODO : ajouter trop beaux shéma
 Admetons la propriété vrais à un rang \emph{n} et démontrons la au rang \emph{n+1}. \\
-Considerons un polygone à \emph{n+1} sommets, en traçant une corde entre les sommets \emph{i} et \emph{i+2} on génère un sous polygone de taille \emph{n}.
+Considerons un polygone à \emph{n+1} sommets, en traçant une	int;
+	int increment = 2; corde entre les sommets \emph{i} et \emph{i+2} on génère un sous polygone de taille \emph{n}.
 Le nombre de cordes d'une triangulation d'un polygone de taille \emph{n+1} est donc égale au nombre de cordes du sous polygone de taille \emph{n} au quel on ajoute une corde.
 Nous avons :\\
 \[
@@ -148,39 +149,153 @@ T_{i,n} = min
 \begin{pmatrix} 
  longueur(s_i, s_{i+t-2}) + T_{i,n-1} \\
   longueur(s_{i+1}, s_{i+t-1}) + T_{i+1,n-1} \\
-  longueur(s_i, s_{i+k}) + longueur(s_{i+k}, s_{i+t-1}) + T_{i,k+1} + T_{i,n-k}
+  longueur(s_i, s_{i+k}) + longueur(s_{i+k}, s_{i+t-1}) + T_{i,k+1} + T_{i+k,n-k}
 \end{pmatrix}               
 \end{equation}
 
 Nous calculons ici la longueur d'une corde entre les sommets \(s_i\) et \(s_j\) grace à la fonction \( longueur(s_i, s_j) \). 
 
-\subsection{Algorithme}
-
- 
- 
-\subsection{Compléxité spatiale et temporelle}
-On utilise une structure tabulaire \((n-2)*(n-2)\) que l'on remplie diagonale par diagonale.
-%TODO : ajouter schéma tableau
-//
-procedure soldynamique( ent n, point poly[], corde2 solution[])
-var piou tab_sous_poly[n-2][n-2]; \\
-var ent i, j, \\
-debut \\
-  //Initialisation du tableau tab_sous_poly
-  pour i allant de 0 à n-2 faire \\
-  pour j allant de 0 à n-2 faire \\
-  tab_sous_poly[i][j].tab_corde <- nill;
-  fait;
-  fait;
- 
- 
+Cette formule de récurence va nous permettre de construire grâce à un algorithme dynamique un tableau de solutions.
+Lorsque ce tableau sera totalement remplis, on choisira alors la meilleure solution présente dans celui-ci.
 
 \subsection{Algorithme}
 
+On utilise un tableau tabSousPoly qui va contenir des structures qui nous permetrons de trouver la bonne solution.
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.3]{schema1.png}
+\caption{Schéma explicatif du tableau de corde d'un polygone pour n=6}
+\end{center}
+\end{figure}
+
+Cette structure particulière est composée comme suit:
+\begin{itemize}
+ \item ent sommeCorde : correspond à la somme de toutes les cordes ajoutées
+ \item ent nbCordes : correspond au nombre total de cordes utilisé pour la triangulation du sous-polygone observé
+ \item corde2 *tabCorde : tableau contenant toutes les cordes retenues jusqu'à présent.
+\end{itemize}
+
+La structure corde2 quand à elle contient les deux points de la corde et la longueur de celle-ci.
+
+Ainsi dans le tableau tabCorde de la case tabSousPoly[i][j] on enregistre la corde entre les sommets \(s_i\) et \(s_{j+2}\) et le tableau de  corde du sous problème résolue.
+  
+\begin{tabbing}
+\hspace{0.4cm} \= \hspace{0.4cm}  \= \hspace{0.4cm} \= \hspace{0.4cm} \= \hspace{0.4cm} \= \kill
+
+procédure soldynamique(ent n, point poly[], corde2 solution[]); \\
+var piou tabSousPoly[n-2][n-2]; \\
+var ent i,j,k,x,y, x1, y1; \\
+var ent t := 3; \\
+var ent NbSommets := 3; //Correspond au nombre de sommets du sous-polygone (au minimum 4) \\
+var ent sommeCordeMin; \\
+var ent sommeCorde2 ; \\
+\\
+debut
+\textit{//Initialisation de la première diagonale de tabSousPoly}\\
+pour i allant de 0 à n-2 faire\\
+  \> création de la corde c entre les sommets \(s_i\) et \(s_{i+2}\) \\
+  \> tabSousPoly[i][i].sommeCorde := c.lon; \\
+  \> \textit{//On ne regarde qu'une seule corde à cette étape} \\
+  \> tabSousPoly[i][i].nbCorde := 1; \\
+  \> tabSousPoly[i][i].tabCorde[0] := c ; \\
+finpour\\
+\\
+\textit{//Boucle principale pour remplir le tableau tabSousPoly }\\
+pour j de 1 à n-3 faire\\
+    \> t := t + 1;\\ 
+    \> pour i allant de 0 à (n-j-2) faire\\
+	\> \> création de la corde c entre les sommets \(s_i\) et \(s_{i+t-1}\) \\
+	\> \> \textit{//Cas 1} \\
+	\> \> sommeCordeMin = longueur$(s_i, s_{i+t-2})$ + $T_{i,t}$ + c.lon; \\
+	\> \> \textit{//On utilise les variables x et y pour garder en mémoire la meilleure case du tableau }\\ 
+	\> \> enregistrement des coordonées x y de la case corespondante au cas 1 \\
+	\> \> \textit{//Cas 2} \\
+	\> \> sommeCorde2 := longueur$(s_{i+1}, s_{i+t-1})$ + $T_{i+1,t}$ + c.lon; \\
+	\> \> si sommeCorde2 $<$ sommeCordeMin alors \\
+	  \> \> \> enregistrement des coordonées x y de la case corespondante au cas 2 \\
+	\> \> fin si; \\
+	\> \> nbCordesArray1 := tabSousPoly[x][y].nbCorde; \\
+	\> \> \textit{//Cas 3 : on regarde deux cordes} \\
+	\> \> si t $>= 5$ faire \\
+	  \> \> \> pour k allant de 2 à NbSommets-3 faire \\
+	    \> \> \> \> sommeCorde2 := longueur$(s_i, s_{i+k})$ + longueur$(s_{i+k}, s_{i+t})$ + $T_{i,k+1}$ + $T_{i+k,t-k}$ \\
+	    \> \> \> \> si sommeCorde2 $<$ sommeCordeMin alors \\
+	      \> \> \> \> \>  enregistrement des coordonées x y de la première case corespondante au cas 3 pour k \\
+	      \> \> \> \> \>  enregistrement des coordonées x1 y1 de la deuxième case corespondante au cas 3 pour k \\
+	      \> \> \> \> \> enregistrement dans nbCordesArray1 du nombre de corde du premier tableau ajouté \\
+	      \> \> \> \> \> enregistrement dans nbCordesArray2 du nombre de corde du deuxième tableau ajouté \\	      
+	    \> \> \> \> fin si; \\
+	  \> \> \> fait; \\
+	\> \> fin si; \\
+	\> \> \textit{//Enregistrement de la meilleure solution trouvée }\\
+	\> \> tabSousPoly[i][i+j].sommeCorde = sommeCordeMin; \\
+	\> \> tabSousPoly[i][i+j].nbCorde = nbCordesArray1 + nbCordesArray2 + 1; \\
+	\> \> tabSousPoly[i][i].tabCorde[0] := c ; \\
+	\> \> pour k allant de 0 à nbCordesArray1 faire \\
+	  \> \> \> tabSousPoly[i][i+j].tabCorde[k+1] := tabSousPoly[x][y].tabCorde[k] ; \\
+	\> \> fait; \\
+	\> \> si nbCordesArray2 $!=$ 0 faire \\
+	  \> \> \> pour k allant de 0 à nbCordesArray2 faire \\
+	    \> \> \> \> tabSousPoly[i][i+j].tabCorde[k + nbCordesArray1 + 1] := tabSousPoly[x1][y1].tabCorde[k] ; \\
+	  \> \> \> fait;\\
+	  \> \> \> nbCordesArray2 := 0;\\
+	\> \> fin si; \\
+  \> fait; \\
+fait; \\
+\\
+\textit{//Nous venons de finir de remplir la partie du tableau qui nous interresse, nous allons maintenant choisir la meilleur solution} \\ 
+\textit{//Cas 1} \\
+sommeCordeMin = longueur$(s_0, s_{n-2})$ + $T_{0,n-1}$; \\
+enregistrement des coordonées x y de la case corespondante au cas 1 \\
+\textit{//Cas 2} \\
+sommeCordeMin = longueur$(s_1, s_{n-1})$ + $T_{0,n-1}$; \\
+si sommeCorde2 $<$ sommeCordeMin alors \\
+  enregistrement des coordonées x y de la case corespondante au cas 2 \\
+fin si; \\
+si n $>=$ 5 faire \\
+  \> \textit{//Cas 3 : on regarde deux cordes} \\
+  \> pour k allant de 2 à NbSommets-3 faire \\
+    \> \> sommeCorde2 := longueur$(s_0, s_{k})$ + longueur$(s_{k}, s_{n-1})$ + $T_{0,k+1}$ + $T_{k,n-k}$ \\
+	  \> \> \> si sommeCorde2 $<$ sommeCordeMin alors \\
+	     \> \> \> \>  enregistrement des coordonées x y de la première case corespondante au cas 3 pour k \\
+	     \> \> \> \>  enregistrement des coordonées x1 y1 de la deuxième case corespondante au cas 3 pour k \\
+	     \> \> \> \> enregistrement dans nbCordesArray1 du nombre de corde du premier tableau que l'on ajoute \\
+	     \> \> \> \> enregistrement dans nbCordesArray2 du nombre de corde du deuxième tableau que l'on ajoute \\	      
+	  \> \> \> fin si; \\
+  \> fait; \\
+fin si; \\
+
+\textit{Enregistrement de la solution finale}
+pour k allant de 0 à nbCordesArray1 faire \\
+  \> solution[k] := tabSousPoly[x][y].tabCorde[k] ; \\
+fait; \\
+si nbCordesArray2 != 0 faire \\
+  \> pour k allant de 0 à nbCordesArray2 faire \\
+    \> \> solution[k + nbCordesArray1] := tabSousPoly[x1][y1].tabCorde[k] ; \\
+  \> fait;\\
+fin si; \\
+fin; \\
+\end{tabbing}
+ 
 \subsection{Compléxité spatiale et temporelle}
+On utilise une structure tabulaire \((n-2)*(n-2)\) que l'on remplie diagonale par diagonale (à l'aide de deux boucle for imbriquées).
+Lors du remplissage de ce tableau, on utilise une boucle for pour l'étude de notre 3eme cas explicité précedement. 
+Nous ainsi une complexitée spatiale en $O(n^3)$.
+
+De plus, ce tableau à deux dimention contient dans chaque case un tableau de dimention t-2 (ou t est la taille du sous-polygone engendré par la corde contenue dans la case).
+On obtient ainsi une complexité spatiale en $O(n^3)$.
+
 
 \subsection{Améliorations possibles}
 
+En considerant le fait que deux sous-problèmes ont toujours un sommet commun, il apparait que les cas 1 et 2 énoncés précédement sont en réalités des cas particuliers du cas 3.
+En effet, le cas 1 est équivalent au cas 3 pour $k=t-2$ on crée ainsi la corde $(s_{i}, s_{i+k})$ et la corde $(s_{i+k}, s_{i+t-1})$.
+Cependant dans notre recherche de maximum on doit considèrer la longueur de la corde $(s_{i+k}, s_{i+t-1})$ comme null puisqu'il s'agit d'un coté du polygone.
+De manière analogue, le cas 2 est équivalent au cas 3 pour $k=1$, on crée les cordes $(s_{i}, s_{i+k})$ et $(s_{i+k}, s_{i+t-1})$.
+Et dans notre recherche, la longueur de la corde $(s_{i}, s_{i+k})$ est considérée comme null.
+
+La formule de récurrence de notre algorithme ce limiterait alors au cas 3. Dans l'implémentation de celui-ci nous devrons donner une longueur null aux cotés du sous-polygone. 
 \section{Algorithme glouton}
 
 
@@ -202,8 +317,7 @@ On dispose d'un fonction "coutcorde(corde c)" qui renvoie la longueur d'une cord
  
 \begin{tabbing}
 \hspace{0.5cm} \= \hspace{0.5cm}  \= \hspace{0.5cm} \= \hspace{0.5cm} \= \kill
-
-
+ 
 \textit{//initialisation de Exterieur}\\
 pour i de 0 à n\\
 faire\\
@@ -211,7 +325,7 @@ faire\\
 finpour\\
 \\
 \textit{//Boucle principale pour remplir le tableau de solution}\\
-pour k de 1 à n-3\\
+pour k de 1 à n-3\\\> \> \textit{//Cas 1} \\
 faire\\
     \> min:= $+\infty$ \\ 
     \> pour i de 0 à n\\
@@ -230,7 +344,6 @@ faire\\
     \> Retirer P[indice] de Exterieur\\
 finpour\\
 \end{tabbing}
- 
 
 Cet algorithme a une complexité en $O(n2)$ (en pratique $O(n2log(n)$ pour la recher de de la corde excluant P[i] complexité du a notre impléméentation) ce qui est ? Comparé au algorithme précedemet étudié.
 Néanmoins cette algorithme ne garantie pas l'exactitude de la solution, mais seulement une approximation.
