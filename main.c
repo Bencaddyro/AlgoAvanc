@@ -46,7 +46,7 @@ void tracersol(int n,point poly[],corde solution[]){
   int i;
   for(i=0;i<n-3;i++){
     SDL_Delay(300);
-      //attendreTouche();
+    //attendreTouche();
     drawLine(poly[solution[i].p1].x,poly[solution[i].p1].y,poly[solution[i].p2].x,poly[solution[i].p2].y,0,255,255);
     SDL_Flip(affichage);
   }
@@ -71,51 +71,44 @@ int main(int argc, char** argv){
   point poly[n];
   corde solution[n-3]; //[n-3];
   corde2 solution2[n-3]; //[n-3];
-  int ok=10;
-clock_t begin,end;
-double sum1=0.0,sum2=0.0,sum3=0.0;
-  
+  int ok=1;  
 
 
 
   while(ok){
-  genpoly(n,poly);
+    genpoly(n,poly);
 
-  //tracerpoly(n,poly);
-
-
-begin=clock();
-solglouton(n,poly,solution);
-end=clock();
-sum1+=(double)(end - begin) / CLOCKS_PER_SEC;
+    tracerpoly(n,poly);
 
 
-//printf("valeur de la solution algo glouton : %f\n",coutsol(n,poly,solution));
 
-//tracersol(n,poly,solution);
+    solglouton(n,poly,solution);
 
-begin=clock();
-  soldynamique(n,poly,solution2);
-end=clock();
-sum2+=(double)(end - begin) / CLOCKS_PER_SEC;
 
-  //tracersol2(n,poly,solution2);
- //printf("valeur de la solution algo dynamique : %f\n",coutsol2(n,solution2));  
 
-begin=clock();
-  solessai(n,poly,solution);
-end=clock();
-sum3+=(double)(end - begin) / CLOCKS_PER_SEC;
 
- //printf("valeur de la solution essai successif : %f\n",coutsol(n,poly,solution));
+    printf("valeur de la solution algo glouton : %f\n",coutsol(n,poly,solution));
 
-  //attendreTouche(&ok);
-	ok--;
- // SDL_FillRect(affichage,NULL,Color(0,0,0));
- // SDL_Flip(affichage);
+    tracersol(n,poly,solution);
+
+
+    soldynamique(n,poly,solution2);
+
+
+    tracersol2(n,poly,solution2);
+    printf("valeur de la solution algo dynamique : %f\n",coutsol2(n,solution2));  
+
+
+    solessai(n,poly,solution);
+
+    printf("valeur de la solution essai successif : %f\n",coutsol(n,poly,solution));
+    printf("__________________________________________\n");
+    attendreTouche(&ok);
+
+    SDL_FillRect(affichage,NULL,Color(0,0,0));
+    SDL_Flip(affichage);
   }
   
-printf("glout : %f dyna %f essai %f\n",sum1/10,sum2/10,sum3/10);
   SDL_Quit();
 
   return EXIT_SUCCESS;
